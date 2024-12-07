@@ -147,13 +147,43 @@ class FunctionCallOutputItemParam:
     id: Optional[str] = None
     type: str = "function_call_output"
 
+
+@dataclass
+class ResponseItemInputTextContentPart:
+    text: str
+    type: str = "input_text"
+
+
+@dataclass
+class ResponseItemInputAudioContentPart:
+    transcript: Optional[str]
+    type: str = "input_audio"
+
+
+@dataclass
+class ResponseItemTextContentPart:
+    text: str
+    type: str = "text"
+
+
+@dataclass
+class ResponseItemAudioContentPart:
+    transcript: Optional[str]
+    type: str = "audio"
+
+
 # Union of all possible item types
 ItemParam = Union[
     SystemMessageItemParam,
     UserMessageItemParam,
     AssistantMessageItemParam,
     FunctionCallItemParam,
-    FunctionCallOutputItemParam
+    FunctionCallOutputItemParam,
+    # azure特有
+    ResponseItemInputTextContentPart,
+    ResponseItemInputAudioContentPart,
+    ResponseItemTextContentPart,
+    ResponseItemAudioContentPart,
 ]
 
 
@@ -456,6 +486,7 @@ class ResponseContentPartAdded(ServerToClientMessage):
     output_index: int  # Index of the output item in the response
     content_index: int  # Index of the content part in the output
     part: Union[ItemParam, None]  # The added content part
+    content: Union[ItemParam, None]
     type: str = EventType.RESPONSE_CONTENT_PART_ADDED  # Fixed event type
 
 @dataclass
@@ -465,6 +496,7 @@ class ResponseContentPartDone(ServerToClientMessage):
     output_index: int  # Index of the output item in the response
     content_index: int  # Index of the content part in the output
     part: Union[ItemParam, None]  # The content part that was completed
+    content: Union[ItemParam, None]
     type: str = EventType.RESPONSE_CONTENT_PART_ADDED  # Fixed event type
 
 @dataclass

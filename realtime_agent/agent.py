@@ -84,7 +84,11 @@ class RealtimeKitAgent:
         try:
             async with RealtimeApiConnection(
                 base_uri=os.getenv("REALTIME_API_BASE_URI", "wss://api.openai.com"),
-                api_key=os.getenv("OPENAI_API_KEY"),
+                api_key=os.environ.get("AZURE_API_KEY"),
+                is_azure=True,
+                api_verison=os.getenv("AZURE_API_VERSION"),
+                deployment=os.getenv("AZURE_DEPLOYMENT"),
+                # 貌似是开启增强日志
                 verbose=False,
             ) as connection:
                 await connection.send_request(

@@ -41,13 +41,23 @@ class RealtimeApiConnection:
         path: str = "/v1/realtime",
         verbose: bool = False,
         model: str = DEFAULT_VIRTUAL_MODEL,
+        is_azure: bool = False,
+        api_verison: str | None = None,
+        deployment: str | None = None,
     ):
-        
-        self.url = f"{base_uri}{path}"
-        if "model=" not in self.url:
-            self.url += f"?model={model}"
+        self.is_azure = is_azure
+        if is_azure:
+            path = "/openai/realtime"
+            self.url = f"{base_uri}{path}"
+            # 设置azure参数
+            self.url += f"?api-version={api_verison}&deployment={deployment}"
+            self.api_key = api_key or os.environ.get("AZURE_API_KEY")
+        else:
+            self.url = f"{base_uri}{path}"
+            if "model=" not in self.url:
+                self.url += f"?model={model}"
+            self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
 
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
         self.websocket: aiohttp.ClientWebSocketResponse | None = None
         self.verbose = verbose
         self.session = aiohttp.ClientSession()
@@ -64,6 +74,8 @@ class RealtimeApiConnection:
         auth = aiohttp.BasicAuth("", self.api_key) if self.api_key else None
 
         headers = {"OpenAI-Beta": "realtime=v1"}
+        if self.is_azure:
+            headers = {"api-key": self.api_key}
 
         self.websocket = await self.session.ws_connect(
             url=self.url,
@@ -106,7 +118,7 @@ class RealtimeApiConnection:
         try:
             return parse_server_message(message)
         except Exception as e:
-            logger.error("Error handling message: " + str(e))
+            logger.error("Error handling message: " + str(e) + " detail=" + message)
             raise e
 
     async def close(self):

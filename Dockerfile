@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code
 COPY realtime_agent realtime_agent
 
-EXPOSE 8080
+EXPOSE 8083
 
 # Default command to run the app
 CMD ["python3", "-m", "realtime_agent.main", "server"]

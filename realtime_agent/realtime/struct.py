@@ -13,15 +13,17 @@ def generate_event_id() -> str:
 
 # Enums
 class Voices(str, Enum):
+    Amuch = "amuch"
+    Dan = "dan"
+    Elan = "elan"
+    Marilyn = "marilyn"
+    Meadow = "meadow"
+    Breeze = "breeze"
+    Cove = "cove"
+    Ember = "ember"
+    Jupiter = "jupiter"
     Alloy = "alloy"
     Echo = "echo"
-    Fable = "fable"
-    Nova = "nova"
-    Nova_2 = "nova_2"
-    Nova_3 = "nova_3"
-    Nova_4 = "nova_4"
-    Nova_5 = "nova_5"
-    Onyx = "onyx"
     Shimmer = "shimmer"
 
 class AudioFormats(str, Enum):

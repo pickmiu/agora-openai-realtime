@@ -5,6 +5,7 @@ from realtime_agent.tools import ToolContext
 # Function calling Example
 # This is an example of how to add a new function to the agent tools.
 
+
 class AgentTools(ToolContext):
     def __init__(self) -> None:
         super().__init__()

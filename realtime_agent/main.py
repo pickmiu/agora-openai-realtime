@@ -9,6 +9,7 @@ from aiohttp import web
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 
+from realtime_agent.customizedtool.tools_ielts import IeltsAgentTools
 from realtime_agent.realtime.tools_example import AgentTools
 
 from .realtime.struct import PCM_CHANNELS, PCM_SAMPLE_RATE, ServerVADUpdateParams, Voices
@@ -83,7 +84,7 @@ def run_agent_in_process(
                 enable_pcm_dump= os.environ.get("WRITE_RTC_PCM", "false") == "true"
             ),
             inference_config=inference_config,
-            tools=None,
+            tools=IeltsAgentTools(),
             # tools=AgentTools() # tools example, replace with this line
         )
     )

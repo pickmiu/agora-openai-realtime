@@ -983,7 +983,7 @@ def select_random_topics(part, num_topics):
     return [{"number": topic["number"], "questions": topic["questions"]} for topic in selected_topics]
 
 
-def get_topics_and_questions() -> str:
+async def get_topics_and_questions() -> str:
     part = 0
     num = 3
 

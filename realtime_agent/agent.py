@@ -314,6 +314,7 @@ class RealtimeKitAgent:
                     pass
                 # ResponseDone
                 case ResponseDone():
+                    logger.info(f"ResponseDone: {message=}")
                     pass
 
                 # ResponseOutputItemAdded
@@ -337,6 +338,7 @@ class RealtimeKitAgent:
                 case RateLimitsUpdated():
                     pass
                 case ResponseFunctionCallArgumentsDone():
+                    logger.info(f"ResponseFunctionCallArgumentsDone: {message=}")
                     asyncio.create_task(
                         self.handle_funtion_call(message)
                     )

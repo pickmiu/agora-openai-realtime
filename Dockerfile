@@ -1,5 +1,8 @@
 FROM ubuntu:22.04
 
+# 设置时区
+ENV TZ=Asia/Shanghai
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies, including gcc and other libraries

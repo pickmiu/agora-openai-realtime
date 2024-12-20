@@ -90,6 +90,12 @@ def run_agent_in_process(
     )
 
 
+async def health_check(request):
+    return web.json_response(
+        {"status": "application running success"}
+    )
+
+
 # HTTP Server Routes
 async def start_agent(request):
     try:
@@ -243,6 +249,7 @@ async def init_app():
 
     app.add_routes([web.post("/start_agent", start_agent)])
     app.add_routes([web.post("/stop_agent", stop_agent)])
+    app.add_routes([web.get("/actuator/health", health_check)])
 
     return app
 

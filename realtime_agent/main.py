@@ -92,7 +92,7 @@ def run_agent_in_process(
 
 async def health_check(request):
     return web.json_response(
-        {"status": "application running success"}
+        {"status": "UP"}
     )
 
 

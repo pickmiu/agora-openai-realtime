@@ -7,6 +7,7 @@ from typing import Any
 import httpx
 
 from agora.rtc.rtc_connection import RTCConnection, RTCConnInfo
+from aiohttp import WSServerHandshakeError
 from attr import dataclass
 
 from agora_realtime_ai_api.rtc import Channel, ChatMessage, RtcEngine, RtcOptions
@@ -142,7 +143,12 @@ class RealtimeKitAgent:
                     inference_config=inference_config
                 )
                 await agent.run()
-
+        except WSServerHandshakeError as error:
+            logger.error(error)
+            if error.status == 401:
+                # 401 feedback web-end resource is not unavailable
+                await asyncio.create_task(cls.connection_fail_feedback(inference_config.azure_base_url,
+                                                                       inference_config.azure_deployment))
         finally:
             await channel.disconnect()
             await connection.close()
@@ -216,7 +222,7 @@ class RealtimeKitAgent:
             await disconnected_future
             # send feedback to web-end if token not none
             logger.info(f"Total token usage: {self.token_usage}")
-            asyncio.create_task(self.send_feedback()).add_done_callback(log_exception)
+            asyncio.create_task(self.conversation_end_feedback()).add_done_callback(log_exception)
             logger.info("Agent finished running")
         except asyncio.CancelledError:
             logger.info("Agent cancelled")
@@ -398,7 +404,7 @@ class RealtimeKitAgent:
                 case _:
                     logger.warning(f"Unhandled message {message=}")
 
-    async def send_feedback(self):
+    async def conversation_end_feedback(self):
         async with httpx.AsyncClient() as client:
             if self.token_usage is None:
                 logger.info("Token is None")
@@ -411,10 +417,26 @@ class RealtimeKitAgent:
                 "tokenUsage": asdict(self.token_usage)
             }
 
-            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL"), json=request_body)
+            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL")+"/conversation-end", json=request_body)
 
             # 检查响应状态码
             if response.status_code == 200:
-                logger.info("Feedback to web-end success")
+                logger.info("Feedback to web-end conversation_end success")
             else:
-                logger.warning("Feedback to web-end fail")
+                logger.warning("Feedback to web-end conversation_end fail")
+
+    @classmethod
+    async def connection_fail_feedback(cls, azure_base_url: str, deployment: str):
+        async with httpx.AsyncClient() as client:
+            request_body = {
+                "azureBaseUrl": azure_base_url,
+                "deployment": deployment
+            }
+
+            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL")+"/connection-fail", json=request_body)
+
+            # 检查响应状态码
+            if response.status_code == 200:
+                logger.info("Feedback to web-end connection_fail success")
+            else:
+                logger.warning("Feedback to web-end connection_fail fail")

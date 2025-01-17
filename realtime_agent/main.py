@@ -5,6 +5,7 @@ import os
 import signal
 from multiprocessing import Process
 
+import psutil
 from aiohttp import web
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
@@ -36,6 +37,10 @@ class StartAgentRequestBody(BaseModel):
     language: str = Field("en", description="The language of the agent")
     system_instruction: str = Field("", description="The system instruction for the agent")
     voice: str = Field("alloy", description="The voice of the agent")
+    azure_base_url: str = Field(..., description="The Azure Base URL of the agent")
+    azure_api_key: str = Field(..., description="The Azure API Key of the agent")
+    azure_deployment: str = Field(..., description="The Azure Deployment of the agent")
+    azure_api_version: str = Field(..., description="The Azure API Version of the agent")
 
 
 class StopAgentRequestBody(BaseModel):
@@ -114,6 +119,23 @@ async def start_agent(request):
         language = validated_data.language
         system_instruction = validated_data.system_instruction
         voice = validated_data.voice
+        azure_base_url = validated_data.azure_base_url
+        azure_api_key = validated_data.azure_api_key
+        azure_deployment = validated_data.azure_deployment
+        azure_api_version = validated_data.azure_api_version
+
+        # Check machine load
+        cpu_usage = psutil.cpu_percent(interval=1)
+        ram_usage = psutil.virtual_memory()
+        logger.info(f"cpu_usage: {cpu_usage}% memory: {ram_usage.percent}%")
+        if cpu_usage > 85 or ram_usage.percent > 85:
+            logger.warning(f"reached maximum load | cpu_usage: {cpu_usage}% memory: {ram_usage.percent}%")
+            return web.json_response(
+                {"error": "maximum load",
+                 "cpu_usage": cpu_usage,
+                 "memory_usage": ram_usage.percent},
+                status=400,
+            )
 
         # Check if a process is already running for the given channel_name
         if (
@@ -134,6 +156,12 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
         if system_instruction:
             system_message = system_instruction
 
+        if not azure_base_url or not azure_api_key or not azure_deployment or not azure_api_version:
+            return web.json_response(
+                {"error": "param: azure account info is empty!"},
+                status=400,
+            )
+
         if voice not in Voices.__members__.values():
             return web.json_response(
                 {"error": f"Invalid voice: {voice}."},
@@ -146,6 +174,10 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
             turn_detection=ServerVADUpdateParams(
                 type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=200
             ),
+            azure_base_url=azure_base_url,
+            azure_api_key=azure_api_key,
+            azure_deployment=azure_deployment,
+            azure_api_version=azure_api_version,
         )
         # Create a new process for running the agent
         process = Process(
@@ -202,7 +234,7 @@ async def stop_agent(request):
         else:
             return web.json_response(
                 {"error": "No active agent found for the provided channel_name"},
-                status=404,
+                status=200,
             )
 
     except Exception as e:

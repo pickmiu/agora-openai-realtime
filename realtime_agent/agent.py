@@ -4,6 +4,7 @@ import logging
 import os
 from builtins import anext
 from typing import Any
+import httpx
 
 from agora.rtc.rtc_connection import RTCConnection, RTCConnInfo
 from attr import dataclass
@@ -11,10 +12,17 @@ from attr import dataclass
 from agora_realtime_ai_api.rtc import Channel, ChatMessage, RtcEngine, RtcOptions
 
 from .logger import setup_logger
-from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAudioBufferCommitted, InputAudioBufferSpeechStarted, InputAudioBufferSpeechStopped, InputAudioTranscription, ItemCreate, ItemCreated, ItemInputAudioTranscriptionCompleted, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, ServerVADUpdateParams, SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json
+from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAudioBufferCommitted, \
+    InputAudioBufferSpeechStarted, InputAudioBufferSpeechStopped, InputAudioTranscription, ItemCreate, ItemCreated, \
+    ItemInputAudioTranscriptionCompleted, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, \
+    ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, \
+    ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, \
+    ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, ServerVADUpdateParams, \
+    SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
 from .utils import PCMWriter
+from dataclasses import asdict
 
 # Set up the logger with color and timestamp support
 logger = setup_logger(name=__name__, log_level=logging.INFO)
@@ -51,7 +59,10 @@ class InferenceConfig:
     system_message: str | None = None
     turn_detection: ServerVADUpdateParams | None = None  # MARK: CHECK!
     voice: Voices | None = None
-
+    azure_base_url: str
+    azure_api_key: str
+    azure_deployment: str
+    azure_api_version: str
 
 class RealtimeKitAgent:
     engine: RtcEngine
@@ -79,15 +90,18 @@ class RealtimeKitAgent:
         tools: ToolContext | None,
     ) -> None:
         channel = engine.create_channel(options)
+        logger.info(f"Conversation used account baseUrl: {inference_config.azure_base_url} "
+                    f"api_key:{inference_config.azure_api_key} "
+                    f"deployment:{inference_config.azure_deployment} "
+                    f"api_version:{inference_config.azure_api_version}")
         await channel.connect()
-
         try:
             async with RealtimeApiConnection(
-                base_uri=os.getenv("REALTIME_API_BASE_URI", "wss://api.openai.com"),
-                api_key=os.environ.get("AZURE_API_KEY"),
+                base_uri=inference_config.azure_base_url,
+                api_key=inference_config.azure_api_key,
                 is_azure=True,
-                api_verison=os.getenv("AZURE_API_VERSION"),
-                deployment=os.getenv("AZURE_DEPLOYMENT"),
+                api_verison=inference_config.azure_api_version,
+                deployment=inference_config.azure_deployment,
                 # 貌似是开启增强日志
                 verbose=False,
             ) as connection:
@@ -110,7 +124,6 @@ class RealtimeKitAgent:
                         )
                     )
                 )
-
                 start_session_message = await anext(connection.listen())
                 # assert isinstance(start_session_message, messages.StartSession)
                 if isinstance(start_session_message, SessionUpdated):
@@ -126,6 +139,7 @@ class RealtimeKitAgent:
                     connection=connection,
                     tools=tools,
                     channel=channel,
+                    inference_config=inference_config
                 )
                 await agent.run()
 
@@ -139,6 +153,7 @@ class RealtimeKitAgent:
         connection: RealtimeApiConnection,
         tools: ToolContext | None,
         channel: Channel,
+        inference_config: InferenceConfig
     ) -> None:
         self.connection = connection
         self.tools = tools
@@ -146,6 +161,8 @@ class RealtimeKitAgent:
         self.channel = channel
         self.subscribe_user = None
         self.write_pcm = os.environ.get("WRITE_AGENT_PCM", "false") == "true"
+        self.token_usage = None
+        self.inference_config = inference_config
         logger.info(f"Write PCM: {self.write_pcm}")
 
     async def run(self) -> None:
@@ -197,6 +214,9 @@ class RealtimeKitAgent:
             )
 
             await disconnected_future
+            # send feedback to web-end if token not none
+            logger.info(f"Total token usage: {self.token_usage}")
+            asyncio.create_task(self.send_feedback()).add_done_callback(log_exception)
             logger.info("Agent finished running")
         except asyncio.CancelledError:
             logger.info("Agent cancelled")
@@ -264,6 +284,33 @@ class RealtimeKitAgent:
             ResponseCreate()
         )
 
+    def accumulate_token(self, usage: dict):
+        if self.token_usage is None:
+            input_details = InputTokenDetails(
+                cached_tokens=0,
+                text_tokens=0,
+                audio_tokens=0
+            )
+            output_details = OutputTokenDetails(
+                text_tokens=0,
+                audio_tokens=0
+            )
+            self.token_usage = Usage(
+                total_tokens=0,
+                input_tokens=0,
+                output_tokens=0,
+                input_token_details=input_details,
+                output_token_details=output_details
+            )
+        self.token_usage.total_tokens += usage['total_tokens']
+        self.token_usage.input_tokens += usage['input_tokens']
+        self.token_usage.output_tokens += usage['output_tokens']
+        self.token_usage.input_token_details.cached_tokens += usage['input_token_details']['cached_tokens']
+        self.token_usage.input_token_details.text_tokens += usage['input_token_details']['text_tokens']
+        self.token_usage.input_token_details.audio_tokens += usage['input_token_details']['audio_tokens']
+        self.token_usage.output_token_details.text_tokens += usage['output_token_details']['text_tokens']
+        self.token_usage.output_token_details.audio_tokens += usage['output_token_details']['audio_tokens']
+
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
             # logger.info(f"Received message {message=}")
@@ -314,7 +361,10 @@ class RealtimeKitAgent:
                     pass
                 # ResponseDone
                 case ResponseDone():
+                    # This only represents the token for this dialogue
+                    # the entire conversation needs to be accumulated
                     logger.info(f"ResponseDone: {message=}")
+                    self.accumulate_token(message.response.usage)
                     pass
 
                 # ResponseOutputItemAdded
@@ -347,3 +397,24 @@ class RealtimeKitAgent:
 
                 case _:
                     logger.warning(f"Unhandled message {message=}")
+
+    async def send_feedback(self):
+        async with httpx.AsyncClient() as client:
+            if self.token_usage is None:
+                logger.info("Token is None")
+                return
+
+            request_body = {
+                "channelName": self.channel.channelId,
+                "azureBaseUrl": self.inference_config.azure_base_url,
+                "deployment": self.inference_config.azure_deployment,
+                "tokenUsage": asdict(self.token_usage)
+            }
+
+            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL"), json=request_body)
+
+            # 检查响应状态码
+            if response.status_code == 200:
+                logger.info("Feedback to web-end success")
+            else:
+                logger.warning("Feedback to web-end fail")

@@ -162,11 +162,11 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
                 status=400,
             )
 
-        if voice not in Voices.__members__.values():
-            return web.json_response(
-                {"error": f"Invalid voice: {voice}."},
-                status=400,
-            )
+        # if voice not in Voices.__members__.values():
+        #     return web.json_response(
+        #         {"error": f"Invalid voice: {voice}."},
+        #         status=400,
+        #     )
 
         inference_config = InferenceConfig(
             system_message=system_message,

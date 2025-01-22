@@ -222,7 +222,7 @@ class RealtimeKitAgent:
             await disconnected_future
             # send feedback to web-end if token not none
             logger.info(f"Total token usage: {self.token_usage}")
-            asyncio.create_task(self.conversation_end_feedback()).add_done_callback(log_exception)
+            await asyncio.create_task(self.conversation_end_feedback())
             logger.info("Agent finished running")
         except asyncio.CancelledError:
             logger.info("Agent cancelled")

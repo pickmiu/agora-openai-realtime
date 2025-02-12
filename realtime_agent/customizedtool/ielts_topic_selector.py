@@ -754,7 +754,10 @@ topics = [
 def select_random_topics(part, num_topics):
     selected_topics = []
 
-    last_part1_index = 49
+    last_part1_index = 1
+    for topic in topics:
+        if ": " in topic["number"]:
+            last_part1_index = last_part1_index + 1
 
     if part == 1:
         part_topics = topics[:last_part1_index]  # Part 1 的主题范围

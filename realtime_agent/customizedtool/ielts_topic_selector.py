@@ -754,7 +754,7 @@ topics = [
 def select_random_topics(part, num_topics):
     selected_topics = []
 
-    last_part1_index = 1
+    last_part1_index = 0
     for topic in topics:
         if ": " in topic["number"]:
             last_part1_index = last_part1_index + 1
@@ -774,12 +774,12 @@ def select_random_topics(part, num_topics):
 
 async def get_topics_and_questions() -> str:
     part = 0
-    num = 3
+    num = 1
 
     data = ""
 
     if part in (1, 0):
-        num_topics_part1 = int(num) if part == 1 and num else 3  # 默认Part 1选择3个主题
+        num_topics_part1 = int(num)
         topics_part1 = select_random_topics(1, num_topics_part1)
         for topic in topics_part1:
             questions = "\n".join(topic['questions'])

@@ -7,961 +7,745 @@ logger = setup_logger(name=__name__, log_level=logging.INFO)
 
 topics = [
     {
-        "number": "Topic 1: Small businesses",
+        "number": "Topic 1: Study",
         "questions": [
-            "Do you know many small businesses where you live?",
-            "Have you ever worked in small businesses?",
-            "Do you prefer buying things from big companies or small businesses?",
-            "Have you ever thought about starting your own business?"
+            "Do you work or are you a student?",
+            "What subject are you studying?",
+            "Why did you choose that subject?",
+            "What would you like to do in the future?",
+            "What are the most popular subjects in China?",
+            "Do you think it's important to choose a subject you like?",
+            "Are you looking forward to working?",
+            "Do you like your subject? (Why? / Why not?)",
+            "Do you prefer to study in the mornings or in the afternoons?",
+            "Is your subject interesting to you?",
+            "Is there any kind of technology you can use in study?"
         ]
     },
     {
-        "number": "Topic 2: Sharing",
+        "number": "Topic 2: Work",
         "questions": [
-            "Did your parents teach you to share when you were a child?",
-            "What kind of things do you like to share with others?",
-            "What kind of things are not suitable for sharing?",
-            "Do you have anything to share with others recently?"
+            "What work do you do?",
+            "Why did you choose to do that type of job?",
+            "Do you like your job?",
+            "Do you miss being a student?",
+            "Is it very interesting?",
+            "Is there any kind of technology you use at work?",
+            "Can you manage your time well when you work?",
+            "Who helps you most at work?"
         ]
     },
     {
-        "number": "Topic 3: Language",
+        "number": "Topic 3: Hometown",
         "questions": [
-            "What languages can you speak?",
-            "What languages would you like to learn in the future?",
-            "How do you learn a foreign language?",
-            "How are languages taught and learned in your school?",
-            "What kinds of difficulties would you have if you want to learn a new language?"
+            "Has your hometown changed much these years?",
+            "Is that a big city or a small place?",
+            "How long have you been living here?",
+            "For you, what benefits are there living in a big city?",
+            "Is there anything you dislike about it?",
+            "What do you like most about your hometown?",
+            "Where in your country do you live?"
         ]
     },
     {
-        "number": "Topic 4: Pen & Pencil",
+        "number": "Topic 4: Accommodation",
         "questions": [
-            "Do you usually use a pen or a pencil?",
-            "Which do you use more often? Pen or pencil?",
-            "When was the last time you bought a pen or pencil?",
-            "What do you think if someone gives you a pen or pencil as a present?"
+            "Are the transport facilities in your city very good?",
+            "Which room does your family spend most of the time in?",
+            "Do you live in a house or a flat?",
+            "Do you plan to live here for a long time?",
+            "Do you live alone or with your family?",
+            "How long have you lived there?",
+            "What do you usually do in your house/flat/room?",
+            "Which is your favourite room in your home?",
+            "What's the difference between where you are living now and where you lived in the past?",
+            "What can you see when you look out the window of your room?",
+            "Would you be willing to live in the countryside in the future?"
         ]
     },
     {
-        "number": "Topic 5: Chocolate",
+        "number": "Topic 5: The area you live in",
         "questions": [
-            "Do you like eating chocolate? Why or why not?",
-            "How often do you eat chocolate?",
-            "Did you often eat chocolate when you were a kid?",
-            "Why do you think chocolate is popular around the world?",
-            "What's your favourite flavour of chocolate?",
-            "Do you think it is good to use chocolate as gifts to others?"
+            "Do you like the area that you live in now?",
+            "Do you think the area you live in now is suitable for people of all ages?",
+            "Are people in your area friendly?",
+            "How has your area changed in recent years?",
+            "Do you know any famous people in your area?",
+            "Where do you like to go in your area?"
         ]
     },
     {
-        "number": "Topic 6: Happy things",
+        "number": "Topic 6: Feeling bored",
         "questions": [
-            "Is there anything that has made you feel happy lately?",
-            "What made you happy when you were little?",
-            "What do you think will make you feel happy in the future?",
-            "When do you feel happy at work? Why?",
-            "Do you feel happy when buying new things?",
-            "Do you think people are happy when buying new things?"
+            "Do you often feel bored?",
+            "What kinds of things would make you feel bored?",
+            "What will you do if you feel bored?",
+            "Do you think childhood is boring or adulthood is boring?"
         ]
     },
     {
-        "number": "Topic 7: Staying up",
+        "number": "Topic 7: Old buildings",
         "questions": [
-            "Do you often stay up late?",
-            "Did you stay up late when you were a kid?",
-            "What do you do when you stay up late?",
-            "What does it feel like the next morning if you stay up late?"
+            "Have you ever seen some old buildings in your city?",
+            "Do you think we should keep old buildings in cities?",
+            "Would you prefer living in an old building or a modern house?"
         ]
     },
     {
-        "number": "Topic 8: T-shirt",
+        "number": "Topic 8: Lost and found",
         "questions": [
-            "Do you like wearing T-shirts?",
-            "How often do you wear T-shirts?",
-            "Do you like T-shirts with pictures or prints?",
-            "Do you think older people who wear T-shirts are fashionable?",
-            "Would you buy T-shirts as souvenirs on vacation?"
+            "What will you do if you find something lost by others?",
+            "Have you ever lost anything?",
+            "Will you post on social media if you lose your items?"
         ]
     },
     {
-        "number": "Topic 9: Outer space and stars",
+        "number": "Topic 9: Mobile phones",
         "questions": [
-            "Have you ever learnt about outer space and stars?",
-            "Do you like science fiction movies? Why?",
-            "Do you want to know more about outer space?",
-            "Do you want to go into outer space in the future?"
+            "Do you remember your first mobile phone?",
+            "Do you often use your mobile phone for texting or making phone calls?",
+            "How has your mobile phone changed your life?",
+            "Will you buy a new one in the future?"
         ]
     },
     {
-        "number": "Topic 10: Art",
+        "number": "Topic 10: Emails",
+        "questions": [
+            "Do you often send emails?",
+            "Is sending emails popular in China?",
+            "Do you think sending emails will be more or less popular in the future?"
+        ]
+    },
+    {
+        "number": "Topic 11: Evening time",
+        "questions": [
+            "Do you like morning or evening?",
+            "What do you usually do in the evening?",
+            "Are there any differences between what you do in the evening now and what you did in the past?"
+        ]
+    },
+    {
+        "number": "Topic 12: Computers",
+        "questions": [
+            "In what conditions would you use a computer?",
+            "When was the first time you used a computer?",
+            "What will your life be like without computers?",
+            "In what conditions would it be difficult for you to use a computer?"
+        ]
+    },
+    {
+        "number": "Topic 13: Talents",
+        "questions": [
+            "Do you have a talent, or something you are good at?",
+            "Do you think your talent can be useful for your future work?",
+            "Do you think people in your family have the same talent?"
+        ]
+    },
+    {
+        "number": "Topic 14: Mirrors",
+        "questions": [
+            "Do you like looking at yourself in the mirror?",
+            "Have you ever bought mirrors?",
+            "Do you usually take a mirror with you?",
+            "Would you use mirrors to decorate your room?"
+        ]
+    },
+    {
+        "number": "Topic 15: Daily routines",
+        "questions": [
+            "What is your daily routine?",
+            "Have you ever changed your routine?",
+            "Which part of your daily routine do you like best?"
+        ]
+    },
+    {
+        "number": "Topic 16: Art",
         "questions": [
             "Do you like art?",
-            "Do you like visiting art galleries?",
-            "Do you want to be an artist?",
-            "Do you like modern art or traditional art?"
+            "Have you ever visited an art gallery?",
+            "Is there any artwork on the wall in your room?",
+            "Did you learn drawing when you were a kid?"
         ]
     },
     {
-        "number": "Topic 11: Number",
+        "number": "Topic 17: Advertisements",
         "questions": [
-            "What's your favorite number?",
-            "Are you good at remembering phone numbers?",
-            "Do you usually use numbers?",
-            "Are you good at math?"
+            "What kinds of advertisements do you watch?",
+            "Where can you see advertisements?",
+            "Have you ever bought something because of its advertisement?",
+            "Do you watch advertisements from the beginning to the end?"
         ]
     },
     {
-        "number": "Topic 12: Weekends",
+        "number": "Topic 18: Dreams",
         "questions": [
-            "Do you like weekends?",
-            "What do you usually do on weekends? Do you study or work?",
-            "What did you do last weekend?",
-            "Do you make plans for your weekends?"
+            "Do you often remember your dreams?",
+            "Are you interested in others’ dreams?",
+            "Do you want to make your dreams come true?"
         ]
     },
     {
-        "number": "Topic 13: Relax",
+        "number": "Topic 19: Watches",
         "questions": [
-            "What would you do to relax?",
-            "Do you think doing sports is a good way to relax?",
-            "Do you think vacation is a good time to relax?",
-            "Do you think students need more relaxing time?"
+            "Do you wear a watch?",
+            "Have you ever got a watch as a gift?",
+            "Why do some people wear expensive watches?"
         ]
     },
     {
-        "number": "Topic 14: Life stages",
+        "number": "Topic 20: Swimming",
         "questions": [
-            "What did you often do with your friends in your childhood?",
-            "What do you think is the most important at the moment?",
-            "Do you have any plans for the next five years?",
-            "How do people remember each stage of their lives?"
+            "Do you like swimming?",
+            "Is it difficult to learn how to swim?",
+            "Where do people usually go swimming in your country?",
+            "What is the difference between swimming in the pool and swimming in the sea?"
         ]
     },
     {
-        "number": "Topic 15: Breakfast",
+        "number": "Topic 21: Car trip",
         "questions": [
-            "What do you usually eat for breakfast?",
-            "Do you think breakfast is important?",
-            "Are there any differences between the mornings of your childhood and now?",
-            "Would you like to change your morning routine?"
+            "Do you like to travel by car?",
+            "Where is the farthest place you traveled to by car?",
+            "Do you like to sit in the front or back when travelling by car?"
         ]
     },
     {
-        "number": "Topic 16: Jewelry",
+        "number": "Topic 22: Websites",
         "questions": [
-            "Do you often wear jewelry?",
-            "What type of jewelry do you like?",
-            "Do you usually buy jewelry?",
-            "Why do you think some people wear a piece of jewelry for a long time?"
+            "What kinds of websites do you usually use?",
+            "What is your favorite website?",
+            "Are there any changes about the websites you usually use?",
+            "What kinds of websites are popular in your country?"
         ]
     },
     {
-        "number": "Topic 17: Keys",
+        "number": "Topic 23: Street market",
         "questions": [
-            "Do you always bring a lot of keys with you?",
-            "Have you ever lost your keys?",
-            "Do you often forget the keys and lock yourself out?",
-            "Do you think it's a good idea to leave your keys with a neighbour?"
+            "What do street markets sell?",
+            "Do you prefer to go shopping in the shopping mall or the street market?",
+            "When was the last time you went to a street market?",
+            "Are there many street markets in China?"
         ]
     },
     {
-        "number": "Topic 18: Library",
+        "number": "Topic 24: Reading",
         "questions": [
-            "Do you often go to the library?",
-            "What do you usually do in the library?",
-            "Did you go to the library when you were a kid?",
-            "Do Chinese kids often go to the library?"
+            "When do you read books?",
+            "How often do you buy books?",
+            "Have you ever read a novel that has been adapted into a film?",
+            "Which one do you prefer, reading books or watching movies?"
         ]
     },
     {
-        "number": "Topic 19: Internet",
+        "number": "Topic 25: Collecting things",
         "questions": [
-            "When did you start using the internet?",
-            "How often do you go online?",
-            "How does the internet influence people?",
-            "Do you think you spend too much time online?",
-            "What would you do without the internet?"
+            "Do you collect anything?",
+            "Are there any things you keep from childhood?",
+            "Where do you usually keep things you collect?"
         ]
     },
     {
-        "number": "Topic 20: News",
+        "number": "Topic 26: Time management",
         "questions": [
-            "Are you interested in news?",
-            "How do you usually find news?",
-            "How do your friends get news?",
-            "Have you read the news this morning?",
-            "Do you often talk with your friends about the news?"
+            "Do you make plans every day?",
+            "Is it easy to manage time?",
+            "Do you think it’s useful to plan your time?",
+            "Do you like being busy?"
         ]
     },
     {
-        "number": "Topic 21: Science",
+        "number": "Topic 27: History",
+        "questions": [
+            "Have you ever been to a history museum?",
+            "Do you like history?",
+            "Have you ever watched historical films?",
+            "Did you like history when you were young?",
+            "When was the last time you read about history?"
+        ]
+    },
+    {
+        "number": "Topic 28: Sitting down",
+        "questions": [
+            "Where is your favorite place to sit?",
+            "Do you always sit down for a long time?",
+            "Do you feel sleepy after you sit down for a while?"
+        ]
+    },
+    {
+        "number": "Topic 29: Sports",
+        "questions": [
+            "What kind of sport did you do when you were young?",
+            "Do you like watching athletic sports?",
+            "Have you joined any sports team?",
+            "Do you think there are too many athletic sports on TV now?",
+            "Do you like watching sports programs on TV?",
+            "Do you watch live sports games?",
+            "Who do you like to watch sports games with?",
+            "What kinds of games do you expect to watch in the future?"
+        ]
+    },
+    {
+        "number": "Topic 30: Cinema",
+        "questions": [
+            "Did you often go to the cinema when you were a child?",
+            "Do you often go to the cinema with your friends?",
+            "Do you still like the same kind of movie which you liked when you were a child?",
+            "What genres of films do you like?",
+            "Do you think going to the cinema is a good way to spend time with friends?"
+        ]
+    },
+    {
+        "number": "Topic 31: Riding Bikes",
+        "questions": [
+            "Did you have a bike when you were young?",
+            "Did/Do you go to school by bike?",
+            "Will you choose to ride a bike if you go out these days?",
+            "Do you have a bike now?",
+            "Do you often ride a bike now?",
+            "Are bikes popular in China?"
+        ]
+    },
+    {
+        "number": "Topic 32: Roads",
+        "questions": [
+            "Are the roads in the area where you live busy?",
+            "How do people cross the road in the city where you live?",
+            "How is the condition of the roads in your city?",
+            "Do you think the roads in your city need improvement?"
+        ]
+    },
+    {
+        "number": "Topic 33: Laughter",
+        "questions": [
+            "Do you like to watch movies or TV shows that make people laugh?",
+            "Do you usually make your friends laugh?",
+            "Have you laughed recently? Why?"
+        ]
+    },
+    {
+        "number": "Topic 34: Coins",
+        "questions": [
+            "Do you often take coins out with you?",
+            "Have you ever collected coins?",
+            "Is it convenient to use coins today?",
+            "Do you use coins in your daily life?"
+        ]
+    },
+    {
+        "number": "Topic 35: Perfume",
+        "questions": [
+            "Do you like to use perfume?",
+            "How often do you wear perfume?",
+            "What kind of perfume do you like to wear?",
+            "Have you ever given a perfume as a gift?"
+        ]
+    },
+    {
+        "number": "Topic 36: Fishing",
+        "questions": [
+            "Do you like eating fish?",
+            "Is fishing popular in your country?",
+            "Have you ever been to a place where there are lots of fish around you?",
+            "Have you seen any movies featuring lots of fish?",
+            "Why do some people like fishing?",
+            "Where can you see fish?"
+        ]
+    },
+    {
+        "number": "Topic 37: Scenery",
+        "questions": [
+            "What kinds of beautiful scenery are there around your hometown?",
+            "When you travel, do you like to stay in hotels with scenic views?",
+            "Do people like to take photos of beautiful scenery?",
+            "Why do people prefer to take photos of beautiful scenery with smartphones?"
+        ]
+    },
+    {
+        "number": "Topic 38: Teamwork",
+        "questions": [
+            "Do you like teamwork?",
+            "Have you worked with a team or someone else?",
+            "What do you think are the benefits of working together, in teams?",
+            "What do you hate when working together with others?"
+        ]
+    },
+    {
+        "number": "Topic 39: Making friends",
+        "questions": [
+            "Do you like making friends?",
+            "Did you make a lot of friends when you were a child?",
+            "Have you made any new friends recently?",
+            "What do you often talk about with your friends?",
+            "Do you like meeting new people?",
+            "Where can you meet new people?"
+        ]
+    },
+    {
+        "number": "Topic 40: Talking with others",
+        "questions": [
+            "What is your daily routine?",
+            "Have you ever changed your routine?",
+            "Which part of your daily routine do you like best?"
+        ]
+    },
+    {
+        "number": "Topic 41: Taking photos",
+        "questions": [
+            "Do you like to take photographs?",
+            "Do you ever take photos of yourself?",
+            "What is your favorite family photo?",
+            "Do you want to improve your picture-taking skills?"
+        ]
+    },
+    {
+        "number": "Topic 42: Free time",
+        "questions": [
+            "What do you like to do in your spare time?",
+            "How much time do you have each week for doing these things?",
+            "Why do you like doing these activities?",
+            "How did you start doing this activity at first?"
+        ]
+    },
+    {
+        "number": "Topic 43: Teachers",
+        "questions": [
+            "Did you want to be a teacher when you were younger?",
+            "Do you remember your teachers from primary school?",
+            "Do you have a favorite teacher?",
+            "What kind of teacher do you prefer?"
+        ]
+    },
+    {
+        "number": "Topic 44: Science",
         "questions": [
             "Do you like science?",
             "When did you start to learn about science?",
-            "Which science subject is interesting to you?",
+            "What is your favourite subject of science?",
             "What kinds of interesting things have you done with science?",
             "Do you like watching science TV programs?",
             "Do Chinese people often visit science museums?"
         ]
     },
     {
-        "number": "Topic 22: E-books and paper books",
+        "number": "Topic 45",
         "questions": [
-            "Which do you prefer, e-books or paper books?",
-            "When do you usually read online?",
-            "Will you read more online in the future?",
-            "Do you think paper books will disappear in the future?"
+            "Part 2: Describe a person who is full of energy. You should say: - Who he or she is - What he or she does - Why he or she is full of energy - And explain how you feel about this person",
+            "Part 3: What kind of jobs require a lot of energy? Do you think manual work will all be done by machines in the future? Do you think manual workers will earn more in the future?"
         ]
     },
     {
-        "number": "Topic 23: Daily routine",
+        "number": "Topic 46",
         "questions": [
-            "What is your daily study routine?",
-            "Have you ever changed your routine?",
-            "Do you think it is important to have a daily routine for your study?",
-            "What part of your day do you like best?"
+            "Part 2: Describe someone you really like to spend time with. You should say: - Who he/she is - How you knew him/her - What you usually do together - And explain why you like to spend time with him/her",
+            "Part 3: What qualities make someone a good friend? How important is friendship in life? Do you think friendships are easier to maintain now than in the past? What role do social media play in friendships?"
         ]
     },
     {
-        "number": "Topic 24: Doing sports",
+        "number": "Topic 47",
         "questions": [
-            "What sports do you like?",
-            "Where did you learn how to do it?",
-            "Did you do some sports when you were young?",
-            "Do you think students need more exercise?",
-            "Do you know any schoolmates who are good at sports?",
-            "Do you think it is important for people to exercise?",
-            "Should schools encourage young students to take more physical exercise?"
+            "Part 2: Describe a person who makes a contribution to society. You should say: - Who this person is - How you knew him/her - What type of work he/she does - And explain why you think he/she contributes to the society",
+            "Part 3: What kinds of jobs are well-paid? What changes in working conditions have you noticed in your country in recent years? Do you think younger people should be less paid than older people?"
         ]
     },
     {
-        "number": "Topic 25: Exciting activities",
+        "number": "Topic 48",
         "questions": [
-            "Have you ever tried any exciting activities?",
-            "What do you think were exciting activities when you were a child?",
-            "Has anything exciting happened to you recently?",
-            "Would you like to try scuba diving and bungee jumping?"
+            "Part 2: Describe an interesting neighbor. You should say: - Who this person is - How you know this person - What he or she does - And explain why you think this person is interesting",
+            "Part 3: Do you have a good relationship with your neighbours? How can we improve our relationships with neighbours? Do you think neighbours are important? Do you think people's relationships with their neighbours today is the same as it was in the past?"
         ]
     },
     {
-        "number": "Topic 26: Schools and workplaces",
+        "number": "Topic 49",
         "questions": [
-            "Where is your school?",
-            "Do you like your school?",
-            "Do you think your school is a good place to study?",
-            "What is the environment like at your school?",
-            "What do you think could be improved in your school?",
-            "How important is interest in study?",
-            "Which subject do you find challenging?",
-            "Do you like your job?",
-            "Do you currently have a good work environment?",
-            "What do you think could be improved at your workplace?",
-            "Have you ever thought about changing jobs?",
-            "What do you think would be challenging when you start working in the future?",
-            "Is there a place in your company that makes you feel relaxed?",
-            "What are the advantages of a company having a relaxation room?",
-            "How do you go to work?",
-            "How do you go to school?"
-        ]
-    },
-    {
-        "number": "Topic 27: Holidays",
-        "questions": [
-            "Where did you go for your last holiday?",
-            "Do you like holidays? Why?",
-            "Which public holiday do you like best?",
-            "What do you do on holidays?",
-            "Do you like to spend your day at home?",
-            "Do you prefer a leisurely or a busy holiday?"
-        ]
-    },
-    {
-        "number": "Topic 28: Childhood memory",
-        "questions": [
-            "What did you enjoy doing as a child?",
-            "Did you enjoy your childhood?",
-            "What are your best childhood memories?",
-            "Do you think it is better for children to grow up in the city or in the countryside?"
-        ]
-    },
-    {
-        "number": "Topic 29: Asking for help",
-        "questions": [
-            "Do you ask for help when you have a problem?",
-            "Why are teachers always willing to help students?",
-            "What kinds of help do you often ask for?",
-            "When was the last time you asked for help?"
-        ]
-    },
-    {
-        "number": "Topic 30: Morning routines",
-        "questions": [
-            "What do you do in the mornings?",
-            "Is breakfast important?",
-            "What is your morning routine?",
-            "Do you like to get up early in the morning?"
-        ]
-    },
-    {
-        "number": "Topic 31: Staying at home",
-        "questions": [
-            "Are you a person who likes to stay at home?",
-            "What do you do when you stay at home?",
-            "What is your favourite place at home?",
-            "What did you often do at home as a child?",
-            "Would you like to stay at home a lot in the future?"
-        ]
-    },
-    {
-        "number": "Topic 32: Shopping",
-        "questions": [
-            "Do you like shopping?",
-            "Do you compare prices when you shop? Why?",
-            "Is it difficult for you to make choices when you shop?",
-            "Do you think expensive products are always better than cheaper ones?"
-        ]
-    },
-    {
-        "number": "Topic 33: Weather",
-        "questions": [
-            "What’s the weather like where you live?",
-            "Do you prefer cold or hot weather?",
-            "Do you prefer dry or wet weather?",
-            "Are you in the habit of checking the weather forecast? When/How often?",
-            "What do you think are the effects of climate change in recent years?",
-            "Would you like to visit other cities that have different climates from where you live?"
-        ]
-    },
-    {
-        "number": "Topic 34: Birthday",
-        "questions": [
-            "What do you usually do on your birthday?",
-            "What did you do on your birthday when you were young?",
-            "Do you think it is important for you to celebrate your birthday?",
-            "Whose birthday do you think is the most important to celebrate in China?"
-        ]
-    },
-    {
-        "number": "Topic 35: Challenges",
-        "questions": [
-            "What subject do you think is the most challenging at school?",
-            "Do you like to challenge yourself?",
-            "Do you like to live a life that has a lot of challenges?",
-            "How do you usually deal with challenges in daily life?"
-        ]
-    },
-    {
-        "number": "Topic 36: Plants",
-        "questions": [
-            "Do you keep plants at home?",
-            "What plant did you grow when you were young?",
-            "Do you know anything about growing a plant?",
-            "Do Chinese people send plants as gifts?"
-        ]
-    },
-    {
-        "number": "Topic 37: Video games",
-        "questions": [
-            "Do you play video games?",
-            "Would you watch others play video games?",
-            "Do you think people spend too much time playing video games?",
-            "Do you prefer playing video games alone or with others?"
-        ]
-    },
-    {
-        "number": "Topic 38: Social media",
-        "questions": [
-            "When did you start using social media?",
-            "Do you think you spend too much time on social media?",
-            "Do your friends use social media?",
-            "What do people often do on social media?"
-        ]
-    },
-    {
-        "number": "Topic 39: Memory",
-        "questions": [
-            "Are you good at memorising things?",
-            "Have you ever forgotten something important?",
-            "What do you need to remember in your daily life?",
-            "How do you remember important things?"
-        ]
-    },
-    {
-        "number": "Topic 40: Singing",
-        "questions": [
-            "Do you like singing? Why?",
-            "Have you ever learned how to sing?",
-            "Who do you want to sing for?",
-            "Do you think singing can bring happiness to people?"
-        ]
-    },
-    {
-        "number": "Topic 41: Helping others",
-        "questions": [
-            "Do you usually help people around you?",
-            "How do you help people around you, such as neighbours, family and friends?",
-            "Do your parents teach you how to help others?",
-            "Did your parents help you a lot when you were young?",
-            "What have you done to help the elderly?"
-        ]
-    },
-    {
-        "number": "Topic 42: Films",
-        "questions": [
-            "What films do you like?",
-            "Did you often watch films when you were a child?",
-            "Did you ever go to the cinema alone as a child?",
-            "Do you often go to the cinema with your friends?",
-            "Do you think going to the cinema is a good way to spend time with friends?"
-        ]
-    },
-    {
-        "number": "Topic 43: Music/Musical instruments",
-        "questions": [
-            "Have you ever learned to play a musical instrument?",
-            "What musical instruments do you enjoy listening to the most?",
-            "Do you think children should learn to play an instrument at school?",
-            "Do you think music education is important to children?",
-            "Do a lot of people like music?",
-            "Do schools in your country have music lessons?"
-        ]
-    },
-    {
-        "number": "Topic 44: Clothing",
-        "questions": [
-            "What kind of clothes do you like to wear?",
-            "Do you prefer to wear comfortable and casual clothes or smart clothes?",
-            "Do you like wearing T-shirts?",
-            "Do you spend a lot of time choosing clothes?"
-        ]
-    },
-    {
-        "number": "Topic 45: The city you live in",
-        "questions": [
-            "What city do you live in?",
-            "Do you like this city? Why?",
-            "How long have you lived in this city?",
-            "Are there big changes in this city?"
-        ]
-    },
-    {
-        "number": "Topic 46: Work or studies",
-        "questions": [
-            "What subjects are you studying?",
-            "Do you like your subject?",
-            "Why did you choose to study that subject?",
-            "Do you think that your subject is popular in your country?",
-            "Do you have any plans for your studies in the next five years?",
-            "What are the benefits of being your age?",
-            "Do you want to change your major?",
-            "Do you prefer to study in the mornings or in the afternoons?",
-            "How much time do you spend on your studies each week?",
-            "Are you looking forward to working?",
-            "What technology do you use when you study?",
-            "What changes would you like to see in your school?",
-            "What work do you do?",
-            "Why did you choose to do that type of work (or that job)?",
-            "Do you like your job?",
-            "What requirements did you need to meet to get your current job?",
-            "Do you have any plans for your work in the next five years?",
-            "What do you think is the most important at the moment?",
-            "Do you want to change to another job?",
-            "Do you miss being a student?",
-            "What technology do you use at work?",
-            "Who helps you the most? And how?"
-        ]
-    },
-    {
-        "number": "Topic 47: Home/accommodation",
-        "questions": [
-            "What kind of house or apartment do you want to live in in the future?",
-            "Are the transport facilities to your home very good?",
-            "Do you prefer living in a house or an apartment?",
-            "Please describe the room you live in.",
-            "What part of your home do you like the most?",
-            "How long have you lived there?",
-            "Do you plan to live there for a long time?",
-            "What’s the difference between where you are living now and where you have lived in the past?",
-            "Can you describe the place where you live?",
-            "What room does your family spend most of the time in?",
-            "What's your favorite room in your apartment or house？",
-            "What makes you feel pleasant in your home？",
-            "Do you think it is important to live in a comfortable environment？",
-            "Do you live in an apartment or a house?",
-            "Who do you live with?",
-            "What do you usually do in your apartment?",
-            "What kinds of accommodation do you live in?"
-        ]
-    },
-    {
-        "number": "Topic 48: Hometown",
-        "questions": [
-            "Where is your hometown?",
-            "Is that a big city or a small place?",
-            "Please describe your hometown a little.",
-            "How long have you been living there?",
-            "Do you think you will continue living there for a long time?",
-            "Do you like your hometown?",
-            "Do you like living there?",
-            "What do you like (most) about your hometown?",
-            "Is there anything you dislike about it?",
-            "What's your hometown famous for？",
-            "Did you learn about the history of your hometown at school？",
-            "Are there many young people in your hometown?",
-            "Is your hometown a good place for young people to pursue their careers?"
-        ]
-    },
-    {
-        "number": "Topic 49: The area you live in",
-        "questions": [
-            "Do you like the area that you live in?",
-            "Where do you like to go in that area?",
-            "Do you know any famous people in your area?",
-            "What are some changes in the area recently?",
-            "Do you know any of your neighbors?",
-            "Are the people in your neighborhood nice and friendly?"
+            "Part 2: Describe a popular person. You should say: - Who he/she is - What he/she has done - Why he/she is popular - And explain how you feel about him/her",
+            "Part 3: Why do some students want to become popular? What kinds of people are more popular at school? Do you think a good teacher should become popular? Why are some celebrities not popular?"
         ]
     },
     {
         "number": "Topic 50",
         "questions": [
-            "Part 2: Describe a website you often visit. You should say: - What it is about - How you found out about it - How often you visit it - And explain why you often visit it",
-            "Part 3: What are the differences between old people and young people when they use the internet? What kinds of people would still go to the library to read and study? Is the library still necessary? Why? Why do some people like to read the news on the internet instead of getting it from TV? What's the difference between the internet and television? What are the most popular and least popular apps in China?"
+            "Part 2: Describe a person you follow on social media. You should say: - Who he/she is - How you knew him/her - What he/she posts on social media - And explain why you follow him/her on social media",
+            "Part 3: Do you think old people and young people use the same kind of social media app? Do old people spend much time on social media? What can people do on social media? Are television and newspapers still useful?"
         ]
     },
     {
         "number": "Topic 51",
         "questions": [
-            "Part 2: Describe an advertisement you have seen but you did not like. You should say: - Where and when you saw it - What the advertisement was for - What you could see in the advertisement - And explain why you did not like the advertisement",
-            "Part 3: What role does social media play in advertising? Does advertising encourage us to buy things we don't need? What do you think of celebrity endorsements in advertising? What are the benefits of advertising? Which one is more effective, newspaper advertising or online advertising? What are the most advertised products in your country?"
+            "Part 2: Describe a family member you want to work with in the future. You should say: - Who he/she is - What he/she does - What kind of work you would like to do with him/her - And explain how you feel about him/her",
+            "Part 3: What kinds of family businesses are common in China? Why do people want to do family business? What are the benefits of working with family members? Is it easier to get promotion in big companies?"
         ]
     },
     {
         "number": "Topic 52",
         "questions": [
-            "Part 2: Describe a piece of technology you own that you feel is difficult to use. You should say: - When you got it - What you got it for - How often you use it - And explain how you feel about it",
-            "Part 3: Does the development of technology affect the way we study? How? What changes has the development of technology brought about in our lives? Why do technology companies keep upgrading their products? Why are people so keen on buying iPhones even though they haven't changed much from one iPhone to the next? Why do big companies introduce new products frequently? What technology do people currently use?"
+            "Part 2: Describe a person who always has strong opinions. You should say: - Who this person is - How you knew him/her - Why you think he/her is an opinionated person - And explain how you feel about him/her",
+            "Part 3: What aspects do young people have strong opinions about? What aspects do old people have strong opinions about? Are children’s opinions influenced by their parents?"
         ]
     },
     {
         "number": "Topic 53",
         "questions": [
-            "Part 2: Describe another city you would like to stay for a short time. You should say: - Where the city is - Why you want to go there - Whom you will go there with - What you will do there - And explain why you will stay there just for a short time",
-            "Part 3: Why is the noise pollution worse in tourism cities than in other cities? Do most people like planned travelling? Do you think tourists may come across bad things in other cities? Why do places with historical sites develop tourism industry more actively? Why are historical cities popular? Why do people sometimes go to other cities or other countries to travel?"
+            "Part 2: Describe a person who has chosen a career in the medical field (e.g. a doctor, a nurse). You should say: - Who her/she is - What he/she does - Why he/she chose this career - And explain how you feel about him/her",
+            "Part 3: Do you think doctors and nurses are very important? Who is more important, doctors or nurses? Do you think that doctors and nurses are not paid enough? Do you think it is necessary to learn first aid skills?"
         ]
     },
     {
         "number": "Topic 54",
         "questions": [
-            "Part 2: Describe a place (city/town) that is good for people to live in. You should say: - Where it is - How you knew this place - What it is like - And explain why it is better than other places to live in",
-            "Part 3: What are the differences between cities and towns? What has happened to towns and villages in recent years in your country? What are the differences between big cities and small ones? What factors will contribute to whether a place is good to live in or not? What are the major changes that have happened in your city? How different is life in the countryside to life in the city?"
+            "Part 2: Describe a person who likes to read a lot. You should say: - Who this person is - How you knew him/her - What he/she likes to read - And explain why you think he/she likes to read a lot",
+            "Part 3: Why are many people so keen on reading? Do you think parents should help their children develop the reading habit from an early age? Is reading for fun or for work?"
         ]
     },
     {
         "number": "Topic 55",
         "questions": [
-            "Part 2: Describe a person who likes to buy goods with low prices. You should say: - Who this person is - What this person likes to buy - Where this person likes to buy things - And explain why this person likes cheap goods",
-            "Part 3: What are the differences between shopping in a shopping mall and in a street market? Which is more commonly visited in China, shopping malls or street markets? Is advertising important? What are the disadvantages of shopping in a street market? How do you buy cheap products? Do you think things are more expensive in big shopping malls?"
+            "Part 2: Describe a person who likes to make things by hand (e.g. toys, furniture). You should say: - Who this person is - What he/she makes - Why he/she likes to make things by hand - And explain how you feel about the person",
+            "Part 3: Are traditional handicrafts important to tourism? What are the benefits for students to learn to make things by hand? Why do many children like to make things by hand? How important are traditional handicrafts to a country's industry? Is it reasonable to charge a high price for handmade things? How does modern technology change the handicraft industry?"
         ]
     },
     {
         "number": "Topic 56",
         "questions": [
-            "Part 2: Describe an important plant in your country. You should say: - What it is - Where you see it - What it looks like - And explain why it is important",
-            "Part 3: What are the features of living in the countryside? Should schools teach children how to grow plants? Why do some people prefer to live in the countryside? Have new kinds of plants been grown in your city recently? Why do some people like to keep plants at home? Are there many trees in your city?"
+            "Part 2: Describe a person from whom others like to ask for advice. You should say: - Who this person is - Why people like to ask for his/her advice - What kind of advice he/she often gives - And explain how you felt about the person",
+            "Part 3: Do you follow the advice of your family members? Who should people ask for advice on big issues, family members or friends? Do people often ask for advice from professional people, like a lawyer? Why do some people like to ask others for advice on almost everything? Do you think the advice parents give their children is always good? Are professional consultancy services expensive in your country?"
         ]
     },
     {
         "number": "Topic 57",
         "questions": [
-            "Part 2: Describe a daily routine that you enjoy. You should say: - What it is - When and why you started to follow this routine - Whether it is easy to follow this routine - And explain why you enjoy having this routine in your daily life",
-            "Part 3: Should children have learning routines? What are the advantages of children having a routine at school? Does having a routine make kids feel more secure at school? How do people's routines differ on weekdays and weekends? What daily routines do people have at home? What are the differences between people's daily routines now and in the last 15 years?"
+            "Part 2: Describe something you received for free. You should say: - What it was - Who you received it from - Why you received it for free - And explain how you felt about it",
+            "Part 3: Do you think people should pay for higher education by themselves? What free gifts do companies usually give to their customers? Why do customers like to receive free gifts from companies?"
         ]
     },
     {
         "number": "Topic 58",
         "questions": [
-            "Part 2: Describe a place you visited where the air was polluted. You should say: - Where the place is - When you visited it - Why the air was not good - And explain how you felt about the place",
-            "Part 3: Is there more pollution now than in the past? Do you think the city is cleaner or dirtier than the countryside? Why? What can factories and power plants do to reduce pollutants? Do you think the wind has any effect on pollution? How? In what ways can air pollution be reduced effectively? Do you think many companies have been forced to reduce pollutants?"
+            "Part 2: Describe a product you bought but you returned in the end. You should say: - What it is - When you bought it - Why you returned it - And explain how you felt about it",
+            "Part 3: Is it common for people to return products they bought? What factors influence a customer's decision to return a product? How do stores handle returned products?"
         ]
     },
     {
         "number": "Topic 59",
         "questions": [
-            "Part 2: Describe a historical building you have been to. You should say: - Where it is - What it looks like - What it is used for now - What you learned there - And how you felt about this historical building",
-            "Part 3: Why do people visit historical buildings? Do Chinese people like to visit historical buildings? Do most people agree to the government’s funding to protect historical buildings? Is it necessary to protect historical buildings? What factors do people often consider when buying a house or an apartment? What are the differences between today’s houses and those in the past?"
+            "Part 2: Describe a traditional product in your country. You should say: - What it is - When you tried this product for the first time - What it is made of - And explain how important this product is",
+            "Part 3: Do young people admire traditional products? Why is it important for children to learn about traditional products? Does the government have responsibility to protect traditional products? Do you think traditional products have better quality than modern products?"
         ]
     },
     {
         "number": "Topic 60",
         "questions": [
-            "Part 2: Describe a time when you taught a friend/relative something. You should say: - Who you taught - What/how you taught - What the result was - And explain how you felt about the experience",
-            "Part 3: What practical skills can young people teach old people? How can young people teach old people skills? How can we know what to do when we want to learn something new? Do you think 'showing' is a better way than 'telling' in education? Do people in your country like to watch videos to learn something? What skills can young people teach old people besides technology?"
+            "Part 2: Describe a kind of food people eat during a special event. You should say: - What the food is - What event people usually eat it - How it is cooked - And explain why it is for the special event.",
+            "Part 3: Why do some people grow their own food these days? Is there any traditional food in your country? What can be the reasons that some young people prefer to have foreign food than having traditional food? Which food is generally popular in your country? Will there be more and more people planting food in the future?"
         ]
     },
     {
         "number": "Topic 61",
         "questions": [
-            "Part 2: Describe a person who thinks music is important and enjoys music. You should say: - Who this person is - How you knew him/her - What music he/she likes - Why he/she thinks music is important - And explain how you feel about him/her",
-            "Part 3: What do you think about playing music for children in class? Why do many teachers incorporate music into the classroom? Do you think there are any advantages to a shop with music playing? Would people's shopping behaviour be affected in a shop with music? What do you think would be the effect of background music in a film? Why are musical movies so popular?"
+            "Part 2: Describe a photo that is special to you. You should say: - When and where it was taken - Who are in the photo - Why it is special to you - And explain whether you will keep it for a long time",
+            "Part 3: Who would take photos more often, young people or older people? What do young people and old people like to take photos of? Why do some people pay a ton of money to hire professional photographers to take photos at some special occasions, such as weddings?"
         ]
     },
     {
         "number": "Topic 62",
         "questions": [
-            "Part 2: Describe an occasion you wore the best clothes. You should say: - When it was - What you wore - Why you wore it - And how you felt about it",
-            "Part 3: Do you think people need to wear formally in the workplace? Why do some people like to wear traditional clothes? Will traditional clothes disappear in the future? Do old people change their style of dressing? Why do some people like to wear expensive clothes? Who would wear formal clothes more often, young people or old people?"
+            "Part 2: Describe the most expensive item you have ever bought. You should say: - When and where you bought it - What it was - What you used it for - And explain how you liked it",
+            "Part 3: Do people spend too much time shopping these days? Why?"
         ]
     },
     {
         "number": "Topic 63",
         "questions": [
-            "Part 2: Describe your first day at school that you remember. You should say: - Where the school was - How you went there - What happened that day - And how you felt on that day",
-            "Part 3: What would parents prepare when their kids go to school on the first day? How do children socialize with each other? Is socialization important for children? What are the reasons for job change? Are big companies better than small companies? Why? What are the advantages and disadvantages coming along with changing jobs?"
+            "Part 2: Describe a piece of technology you own that you feel difficult to use. You should say: - What it is - When you got it - How often you use it - And explain how you feel about it",
+            "Part 3: What technological products do people currently use? Why do big companies introduce new products frequently? Why are people so keen on buying iPhones even though they haven’t changed much? Does the development of technology affect the way we study?"
         ]
     },
     {
         "number": "Topic 64",
         "questions": [
-            "Part 2: Describe your favorite place in your house where you can relax. You should say: - Where it is - What it is like - What you enjoy doing there - And explain why you feel relaxed at this place",
-            "Part 3: Why is it difficult for some people to relax? What are the benefits of doing exercise? Do people in your country exercise after work? What is the place where people spend most of their time at home? Do you think there should be classes for training young people and children how to relax? Which is more important, mental relaxation or physical relaxation?"
+            "Part 2: Describe a toy you got in your childhood. You should say: - What it was - When you got it - How you got it - And explain how you felt about it.",
+            "Part 3: Why do some people think advertising aimed at children should be prohibited? Why do you think some parents buy lots of toys for their kids instead of spending more time with them? What are some of the differences between the toys kids play with nowadays and those they used to play with in the past?"
         ]
     },
     {
         "number": "Topic 65",
         "questions": [
-            "Part 2: Describe an indoor or outdoor place where it is easy for you to study. You should say: - Where it is - What it is like - When you go there - What you study there - And explain why you would like to study in this place",
-            "Part 3: Do you like to learn on your own or with others? What's the difference between learning face-to-face with teachers and learning by yourself? Do you prefer to study at home or study in other places? What are the benefits of gaining work experience while studying? Do most people like to study in a noisy place? What are the advantages and disadvantages of studying with other people?"
+            "Part 2: Describe a gift you would like to buy for your friend. You should say: - What gift you would like to buy - Who you would like to give it to - Why you want to buy this gift for him/her - And explain why you would like to choose that gift",
+            "Part 3: When do people send gifts to others? Do people give gifts or red packets on traditional festivals? Is it hard to choose a gift? Will people feel happy when receiving an expensive gift?"
         ]
     },
     {
         "number": "Topic 66",
         "questions": [
-            "Part 2: Describe a time when you missed or were late for an important meeting/event. You should say: - When it happened - What happened - Why you missed/were late for it - And explain how you felt about this experience",
-            "Part 3: Are you a punctual person? Do you think it is important to be on time? Do you always avoid being late? Why are people often late for meetings or appointments? Are people in your country often late for meetings? Do you think people are born with time management skills or they can develop them?"
+            "Part 2: Describe a piece of clothing that someone gave you. You should say: - What it is - Who gave it to you - When you got it - And explain why this person gave you this piece of clothing",
+            "Part 3: Why do people dress casually in daily life and dress formally at work? What are the advantages and disadvantages of wearing a uniform at work and school? Why do people from different countries wear different clothes?"
         ]
     },
     {
         "number": "Topic 67",
         "questions": [
-            "Part 2: Describe a person you met at a party who you enjoyed talking with. You should say: - What party it was - Who this person is - What you talked about - And explain why you enjoyed talking with him/her",
-            "Part 3: In what situations would people be willing to get to know new people? Where do people go to meet new people? How do people start a conversation? Is it difficult for Chinese people to communicate with people from other countries? Why are some people unwilling to have conversations with others? Is it difficult for adults to talk with children?"
+            "Part 2: Describe something you cannot live without (not a computer/phone). You should say: - What it is - What you do with it - How it helps you in your life - And explain why you cannot live without it",
+            "Part 3: Why are children attracted to electronic devices? Why do some adults hate to throw away old things, such as clothes? What do you think influences people to buy new things?"
         ]
     },
     {
         "number": "Topic 68",
         "questions": [
-            "Part 2: Describe a place you have been to where things are expensive. You should say: - Where the place is - What the place is like - Why you went there - What you bought there - And explain why you think things are expensive there",
-            "Part 3: Why do some people still use cash? Will the payment be paperless in the future? What do you think of the view that time is as important as money? Is it more important to choose a job with a high salary or with more time off? How important is it to have a variety of payment option? Why are things more expensive in some places than in others?"
+            "Part 2: Describe your grandfather/grandmother’s job. You should say: - What job he/she does - What you know about his/her job - Whether it is his/her only job - And explain how you feel about his/her job",
+            "Part 3: How do people generally feel about their grandparents' jobs? What impact do grandparents' professions have on their grandchildren?"
         ]
     },
     {
         "number": "Topic 69",
         "questions": [
-            "Part 2: Describe a special meal that someone made for you. You should say: - Who did it - When and how he/she cooked - What and why he/she cooked for you - And explain how you felt about the meal",
-            "Part 3: Should students learn to cook at school? Do you think people's eating habits would change as they get older? Do people in your country like to learn to cook from TV programmes? What kinds of fast food are popular in China? Are there any people who wouldn't eat meat for their whole lives? What do you think about vegetarians?"
+            "Part 2: Describe an online video where you learned something new. You should say: - When and where you watched it - What it was - Why you watched it - And explain what you learned from it",
+            "Part 3: What kinds of videos are most popular in your country? Are there many people who watch online videos a lot? Do you think people spend too much time watching short videos? Why are so many young people obsessed with short videos?"
         ]
     },
     {
         "number": "Topic 70",
         "questions": [
-            "Part 2: Describe something you own that you want to replace. You should say: - What it is - Where it is - How you got it - And explain why you want to replace it",
-            "Part 3: Does consumption have any impact on the environment? Why do people always want to buy new things to replace old ones? Why do you think some people replace things more often than others? Why do young people change things more often than old people? Why do some people like to buy expensive things? Why do some people prefer to buy things in the supermarket rather than online?"
+            "Part 2: Describe a movie you watched recently. You should say: - When and where you watched it - Who you watched it with - What it was about - And explain why you chose to watch this movie",
+            "Part 3: What kinds of movies do you think are successful in your country? What are the factors that make a successful movie? Do Chinese people prefer to watch domestic movies or foreign movies?"
         ]
     },
     {
         "number": "Topic 71",
         "questions": [
-            "Part 2: Describe a complaint that you made and you were satisfied with the result. You should say: - When it happened - Who you complained to - What you complained about - And explain why you were satisfied with the result",
-            "Part 3: When are people more likely to make complaints? What do people often complain about? Which one is better when making a complaint, by talking or by writing? Who are more likely to make complaints, older people or younger people? How would you react if you received a poor service at a restaurant? How do people often respond to poor customer service?"
+            "Part 2: Describe a good service you received. You should say: - What the service was - When you received it - Who you were with - And explain how you felt about it",
+            "Part 3: What do you think of the relationship between companies and customers? As a customer, what kinds of services would you expect to receive from a company? Why should companies react quickly when customers have difficulties?"
         ]
     },
     {
         "number": "Topic 72",
         "questions": [
-            "Part 2: Describe a film character played by an actor or actress whom you admire. You should say: - Who this actor/actress is - When you saw the film - What the character was like in this film - And explain why you admire this actor/actress",
-            "Part 3: Are actors or actresses very interested in their work? Why? Is being a professional actor or actress a good career? What can children learn from acting? Why do children like special costumes? What are the differences between actors or actresses who earn much and those who earn little? What are the differences between acting in a theatre and that in a film?"
+            "Part 2: Describe something that helps you to focus on study/work. You should say: - What it is - How often you do it - When you start doing it - And explain how it helps you concentrate",
+            "Part 3: Do you think children need to have routines? Do you think routines are important for companies? What are the routine activities that old people and young people do in your country?"
         ]
     },
     {
         "number": "Topic 73",
         "questions": [
-            "Part 2: Describe a new law you would like to introduce in your country. You should say: - What law it is - What changes this law brings - Whether this new law will be popular - How you came up with the new law - And explain how you feel about this new law",
-            "Part 3: What rules should students follow at school? Do people in your country usually obey the law? What kinds of behavior are considered as good behavior? Do you think children can learn about the law outside of school? What are the benefits for people to obey rules? How can parents teach children to obey rules?"
+            "Part 2: Describe an ambition that you haven’t achieved. You should say: - What it is - Why you haven’t achieved it - What you have already done - And explain how you felt about it",
+            "Part 3: What ambitions do children usually have? Why are some people very ambitious at work? Why do some people not have any dreams?"
         ]
     },
     {
         "number": "Topic 74",
         "questions": [
-            "Part 2: Describe a piece of good news that you heard about someone you know well. You should say: - What it was - When you heard it - How you knew it - And explain how you felt about it",
-            "Part 3: Is it good to share something on social media? Should the media only publish good news? How does social media help people access information? What kind of good news do people often share in the community? Do most people like to share good news with others? Do people like to hear good news from their friends?"
+            "Part 2: Describe a song or piece of music you like. You should say: - What the song or music is - What kind of song or music it is - Where you first heard it - And explain why you like it",
+            "Part 3: Do you think young people and old people enjoy the same kind of music? Why are many music competitions popular in China? What are the differences between live concerts and online concerts?"
         ]
     },
     {
         "number": "Topic 75",
         "questions": [
-            "Part 2: Describe a sport that you only have watched before but have not played yourself. You should say: - What it is - When you watched it - Where you watched it - Who you watched it with - And explain how you felt about it",
-            "Part 3: What kinds of sports would you like to play in the future? Why are there many athletes in advertisements? What are the features of people who watch sports games online, such as gender or age? What's the most popular sport in your country? What kinds of sports are popular now but not popular 50 years ago? Do you think there are too many sorts of sports games on TV?"
+            "Part 2: Describe something that helped you learn a foreign language. You should say: - What it was - What language you learnt - Why you chose to learn that language - And explain how this thing helped you",
+            "Part 3: What difficulties do people face when learning a language? Do you think language learning is important? Is studying abroad a good way to learn a foreign language?"
         ]
     },
     {
         "number": "Topic 76",
         "questions": [
-            "Part 2: Describe an enjoyable journey by public transport. You should say: - Where you went - Who you were with - What you did - And how you felt about it",
-            "Part 3: Why do people choose to travel by public transport? Why do more and more people like to travel by plane? Do you think offering free public transport will solve traffic problems in the city? What are the disadvantages of traveling by public transport? What do you think are the cheapest and most expensive means of transport? What are the difficulties that commuters face during rush hours?"
+            "Part 2: Describe a rule that you would like to change. You should say: - What it is - Why you want to change it - How others feel about the rule - And explain whether you have followed the rule",
+            "Part 3: What kind of rules do schools in China have? What rules should children follow at home? Do people often violate the rules in China?"
         ]
     },
     {
         "number": "Topic 77",
         "questions": [
-            "Part 2: Describe a time when someone gave you something that you really wanted. You should say: - What it was - When you received it - Who gave it to you - And explain why you wanted it so much",
-            "Part 3: Should employees have their own goals? How should bosses reward employees? What kinds of gifts do young people like to receive as rewards? How should children spend their allowance money? Why do people like shopping more now than in the past? Do you think shopping is good for a country's economy?"
+            "Part 2: Describe a story someone told you and you remember. You should say: - What the story was about - Who told you this story - Why you remember it - And explain how you feel about it",
+            "Part 3: Do young children like the same stories as older children? How has technology changed the way of storytelling? Why do children like stories?"
         ]
     },
     {
         "number": "Topic 78",
         "questions": [
-            "Part 2: Describe a person who you are happy to know. You should say: - Who this person is - How you know this person - What he or she is like - And explain why you are happy to know him/her",
-            "Part 3: How can children feel happy? What's the difference between adults' and children's happiness? Do you think everyone shares a similar definition of happiness? Some people say that living in a happy city is boring. What do you think? Which do you think is more important in the workplace, happiness or high salaries? How can companies improve employee happiness?"
+            "Part 2: Describe a foreign country you would like to go in the future. You should say: - Where it is - What it is famous for - What you can do there - And explain why you want to go there",
+            "Part 3: What attracts tourists to your country? How important is it for people to travel abroad? What can people learn from traveling?"
         ]
     },
     {
         "number": "Topic 79",
         "questions": [
-            "Part 2: Describe something you would like to learn in the future. You should say: - What it is - How you would like to learn it - Where you would like to learn it - Why you would like to learn it - And explain whether it’s difficult to learn it",
-            "Part 3: What's the most popular thing to learn nowadays? At what age should children start making their own decisions? Why? Which influences young people more when choosing a course, income or interest? Do young people take their parents' advice when choosing a major? Besides parents, who else would people take advice from? Why do some people prefer to study alone?"
+            "Part 2: Describe a place in the countryside that you visited. You should say: - Where it is - When you visited this place - What you did there - And explain how you feel about this place",
+            "Part 3: Is there anything special about the countryside in China? What do people usually do when going to the countryside? Do you think more people will live in the countryside in the future?"
         ]
     },
     {
         "number": "Topic 80",
         "questions": [
-            "Part 2: Describe an interesting place you have been to with a friend. You should say: - What and where the place is - Who you went with - When you went there - What you did there - And explain why you think it is interesting",
-            "Part 3: Why do people need friends? How do you communicate with friends? Why don't some people like to socialise? Can talking with people improve social skills? Does technology help people communicate better with others? Do you prefer to go out with a group of friends or just with a few close friends?"
+            "Part 2: Describe an important river/lake in your country. You should say: - Where it is - How big/long it is - What it looks like - And explain why it is important",
+            "Part 3: How can rivers/lakes benefit local people? How do rivers/lakes affect local tourism? Are rivers/lakes useful for transport?"
         ]
     },
     {
         "number": "Topic 81",
         "questions": [
-            "Part 2: Describe an interesting old person you have met. You should say: - Who this person is - When/where you met this person - What you did with this person - And explain why you think this person is interesting",
-            "Part 3: Do you think old people and young people can share interests? What can old people teach young people? Is it easy for young people and old people to make friends with each other? Are there benefits when one person is interested in another person? Why? Do you think people are more selfish or self-centered now than in the past? What benefits can people get if they are self-centered?"
+            "Part 2: Describe a quiet place where you like to spend your time. You should say: - Where it is - How often you go there - What you do there - And explain how you feel about this place",
+            "Part 3: Is it hard to find quiet places in cities? Why is it quieter in the countryside? Compared with young people, do old people prefer to live in quiet places?"
         ]
     },
     {
         "number": "Topic 82",
         "questions": [
-            "Part 2: Describe a person who encouraged you to achieve your goal. You should say: - Who the person is - How he/she encouraged you - What goal you achieved - And explain how you feel about this person",
-            "Part 3: Do you think children are more likely to achieve their goals if they are encouraged? What should parents do if their children don't want to study? Who do you think should set goals for children? Who plays a more important role in children's education, parents or teachers? Is money the only motivation for people to work hard? Which is more important, competition or cooperation?"
+            "Part 2: Describe a cultural place (e.g. library, museum, theatre). You should say: - Where it is - How you knew this place - What it is like - And explain how the place is related to culture",
+            "Part 3: How does the internet affect culture? How is a culture formed? What kind of culture is popular among the young?"
         ]
     },
     {
         "number": "Topic 83",
         "questions": [
-            "Part 2: Describe a tourist attraction that very few people visit but you think is interesting. You should say: - What the place is - What people can see there - Why only very few people visit there - And explain why you think it is interesting",
-            "Part 3: Why do people visit tourist attractions? What makes a tourist attraction famous? Do local people like to visit local tourist attractions? Do you think tourism causes environmental damage? How can people prevent the environmental damage caused by tourism? Should all tourist attractions be free to the public?"
+            "Part 2: Describe an ideal and perfect place where you would like to stay, e.g. a house or an apartment. You should say: - Where it would be - What it would look like - What special features it would have - And explain why it would be an ideal place for you",
+            "Part 3: What are apartments like in your country? Why are apartments welcome in some places while not in other places? What would people normally consider when they rent or buy a house or an apartment?"
         ]
     },
     {
         "number": "Topic 84",
         "questions": [
-            "Part 2: Describe a person you really enjoy studying/working with. You should say: - Who this person is - When you often study/work together - What you study/work together - And explain why you enjoy studying/working with him/her",
-            "Part 3: Should children be encouraged to learn from their peers? What difficulties or problems would introverted people face in work or study? How can a person be a good co-worker? What makes a good employee? How can people improve their collaboration skills? Do you think it is more important for an employee to keep good relationships with colleagues than just focus on the work?"
+            "Part 2: Describe a place in your hometown/city that is different from other places and you would like to visit with your parents/friends. You should say: - Where it is - Why you think it is different - Who you would like to go with - And explain whether you have been there",
+            "Part 3: What are the differences between big cities and small cities? Where do people in your hometown like to go? What are the differences between the places young people like to go and the places old people like to go?"
         ]
     },
     {
         "number": "Topic 85",
         "questions": [
-            "Part 2: Describe a place where you have taken photos more than once. You should say: - Where the place is - When you took the photos - What special features the photos taken there have - And explain why you have been there more than once to take photos",
-            "Part 3: Do you like to take photos? Where do people often like to take photos? Who would like to take photos more often, young people or older people? Would you pay a lot of money to hire a photographer? Do you think being a photographer is a good job? On what occasions do people need formal photos?"
+            "Part 2: Describe a positive change you made in your life. You should say: - What the change was - When it happened - How it happened - And explain why it was a positive change",
+            "Part 3: Is it easier for young people to change? What are the disadvantages when people keep making changes in life? What are some of the major changes that occur to people throughout their lives?"
         ]
     },
     {
         "number": "Topic 86",
         "questions": [
-            "Part 2: Describe a time you taught something new to a younger person. You should say: - When it happened - What you taught - Who you taught - Why you taught this person - And how you felt about the teaching",
-            "Part 3: What skills do adults need to have? How can people be motivated to learn new things? What can children learn from teachers and parents? What are the skills that you wanted to learn? What skills should children learn before entering school? How does a good learner learn something new?"
+            "Part 2: Describe a time that the vehicle broke down during your travel. You should say: - When and where it happened - Who you were with at that time - How you dealt with the broken vehicle - And explain what the impact this breakdown had.",
+            "Part 3: What are the advantages and disadvantages of private transport? What do you think needs to be improved in public transport? Will there be fewer people using private cars because of the improved public transport?"
         ]
     },
     {
         "number": "Topic 87",
         "questions": [
-            "Part 2: Describe a noisy place you have been to. You should say: - Where it is - When you went there - What you did there - And explain why you feel it’s a noisy place",
-            "Part 3: Do you think it is good for children to make noise? Should children not be allowed to make noise under any circumstances? What kinds of noises are there in our life? Which area is exposed to noise more, the city or the countryside? How would people usually respond to noises in your country? How can people consider others' feelings when chatting in public?"
+            "Part 2: Describe a thing you once forgot to do. You should say: - What it is - When you forgot it - Why you forgot it - And explain how you felt about this experience",
+            "Part 3: How can we strengthen our memory? What kind of people might easily forget things? What kind of things do people often forget?"
         ]
     },
     {
         "number": "Topic 88",
         "questions": [
-            "Part 2: Describe an activity you enjoyed in your free time when you were young. You should say: - What it was - Where you did it - Who you did it with - And explain why you enjoyed it",
-            "Part 3: Is it important to have a break during work or study? What sports do young people like to do now? Are there more activities for young people now than 20 years ago? Can most people balance work and life in China? What activities do children and adults do nowadays? Do adults and children have enough time for leisure activities nowadays?"
+            "Part 2: Describe a time you visited a new place. You should say: - Where it is - When you went there - Why you went there - And explain how you feel about the place",
+            "Part 3: Which one do you prefer, living in a city or only visiting one as a tourist? How do children react when they go to a new school for the first time? How do young and old people react differently to new things?"
         ]
     },
     {
         "number": "Topic 89",
         "questions": [
-            "Part 2: Describe someone you know who made a good decision recently. You should say: - Who he/she is - When he/she made the decision - What decision he/she made - Why it was a good decision - And explain how you felt about the decision",
-            "Part 3: Should parents make decisions for their children? Do you think parents are the best people to make decisions about their children's education? At what age do you think children can be allowed to make decisions by themselves? Why do most children find it difficult to make decisions? Should parents interfere in children's decision-making? How should parents help their children make decisions?"
+            "Part 2: Describe an occasion you had a special cake. You should say: - When this happened - Where this happened - Who gave you the cake - And explain why it was a special cake",
+            "Part 3: What’s the difference between special food in China and foreign countries? Do Chinese people usually cook special food in traditional festivals? Do Chinese families like to eat together during traditional holidays?"
         ]
     },
     {
         "number": "Topic 90",
         "questions": [
-            "Part 2: Describe a risk you took that you thought would lead to a terrible result but ended up with a positive result. You should say: - When you took the risk - Why you took the risk - How it went - And explain how you felt about it",
-            "Part 3: How should parents teach their children what a risk is? What risks should parents tell their children to avoid? Why do some people like to watch risk-taking movies? What kinds of sports are dangerous but exciting? Why do some people enjoy dangerous sports? Who is more interested in taking risks, the young or the old?"
-        ]
-    },
-    {
-        "number": "Topic 91",
-        "questions": [
-            "Part 2: Describe a natural place (e.g. parks, mountains). You should say: - Where this place is - How you knew this place - What it is like - And explain why you like to visit it",
-            "Part 3: What kind of people like to visit natural places? What are the differences between a natural place and a city? Do you think that going to the park is the only way to get close to nature? What can people gain from going to natural places? Are there any wild animals in the city? Do you think it is a good idea to let animals stay in local parks for people to see?"
-        ]
-    },
-    {
-        "number": "Topic 92",
-        "questions": [
-            "Part 2: Describe a subject that you would like to learn in the future. You should say: - What it is - Where and how you want to learn it - Why you want to learn it - And explain if it will be difficult to learn it",
-            "Part 3: What are the differences between online learning and offline learning? Do you prefer to study alone or with a group of people? What are the advantages and disadvantages of learning in a group? What subjects do most young people prefer to learn? Why? What is more important when choosing a job, high salary or interest? What do you think about face-to-face learning with teachers?"
-        ]
-    },
-    {
-        "number": "Topic 93",
-        "questions": [
-            "Part 2: Describe a time when you received money as a gift. You should say: - When it happened - Who gave you money - Why he/she gave you money - And explain how you used the money",
-            "Part 3: Why do people rarely use cash now? When do children begin to comprehend the value of money? Is it good and necessary to teach children to save money? Should parents reward children with money? What are the advantages and disadvantages of using credit cards? Do you think it's a good thing that more people are using digital payment?"
-        ]
-    },
-    {
-        "number": "Topic 94",
-        "questions": [
-            "Part 2: Describe someone (a famous person) that is a role model for young people. You should say: - Who he/she is - How you knew him/her - What he/she has done - And explain why he/she can be a role model for young people",
-            "Part 3: What kinds of people are likely to be the role models for teenagers? Is it important for children to have a role model? Are there any differences between today’s famous people and those of the past? What qualities do famous people have? What kinds of people are likely to become famous? Do people tend to choose the best people as their role model?"
-        ]
-    },
-    {
-        "number": "Topic 95",
-        "questions": [
-            "Part 2: Describe something that you did with someone/a group of people. You should say: - What it was - Who you did it with - How long it took you to do this - And explain why you did it together",
-            "Part 3: How do you get along with your neighbors? How do neighbors help each other? Do you think neighbors help each other more often in the countryside than in the city? How do children learn to cooperate with each other? Do you think parents should teach children how to cooperate with others? How? Do you think it's important for children to learn about cooperation?"
-        ]
-    },
-    {
-        "number": "Topic 96",
-        "questions": [
-            "Part 2: Describe an unusual meal you had. You should say: - When you had it - Where you had it - Whom you had it with - And explain why it was unusual",
-            "Part 3: What are the advantages and disadvantages of eating in restaurants? What fast food restaurants are there in your country? Do people eat fast food at home? Why do some people choose to eat out instead of ordering takeout? Do people in your country socialize in restaurants? Why? Do people in your country value food culture?"
-        ]
-    },
-    {
-        "number": "Topic 97",
-        "questions": [
-            "Part 2: Describe a picture/photograph of you that you like. You should say: - Where it was taken/drawn - When it was taken/drawn - Who took/drew it - And explain how you felt about it",
-            "Part 3: Why do people take photos? What do people use to take photos these days, cameras or phones? Is it difficult for people to learn how to take good photos? How do people keep their photos? What photos do people often hang on the wall at home? Is it necessary for students to learn art?"
-        ]
-    },
-    {
-        "number": "Topic 98",
-        "questions": [
-            "Part 2: Describe a public event you have attended. You should say: - What the event was - When you went there - Whom you went there with - And explain why you enjoyed this event",
-            "Part 3: What kinds of public events are popular in your country? Why do people like to attend these events? What are the benefits of attending public events? How do public events contribute to the local economy? What are some of the challenges in organizing public events? How can public events be made more inclusive?"
-        ]
-    },
-    {
-        "number": "Topic 99",
-        "questions": [
-            "Part 2: Describe a kind of car you would like to buy in the future. You should say: - What it is like - Where you can buy it - How you can buy it - And explain why you want to buy it",
-            "Part 3: What are the advantages and disadvantages of riding a bicycle? Is the traffic planning reasonable in your hometown? What are the benefits of owning a car? How can public transportation be improved in cities? Why do some people prefer driving to using public transport? How does car ownership affect the environment?"
-        ]
-    },
-    {
-        "number": "Topic 100",
-        "questions": [
-            "Part 2: Describe something you did that made you feel proud. You should say: - What it was - How you did it - What difficulty you had - How you dealt with the difficulty - And explain why you felt proud of it",
-            "Part 3: Which one is more important, personal goals or work goals? Have your life goals changed since your childhood? Does everyone set goals for themselves? What kinds of rewards are important at work? Do you think material rewards are more important than other rewards at work? What makes people feel proud of themselves?"
-        ]
-    },
-    {
-        "number": "Topic 101",
-        "questions": [
-            "Part 2: Describe a kind of foreign food you have had. You should say: - When you had it - Where you ate it - What it was - And explain how you felt about it",
-            "Part 3: Is there a relationship between food and health? How do people's eating habits change over time? What are the benefits of trying foreign food? How does culture influence food preferences? Why do some people prefer to eat at home rather than in restaurants? What impact does globalization have on food choices?"
-        ]
-    },
-    {
-        "number": "Topic 102",
-        "questions": [
-            "Part 2: Describe a new development in the area where you live (e.g. shopping mall, park…). You should say: - What and where the development is - What it was like before - How long it took to complete it - How people feel about it - And explain how it has improved the area you live in",
-            "Part 3: Is public transportation popular in China? What can be done to improve public transport services in your hometown? What leisure facilities can be used by people of all ages? Do you think young people in your country like going to the cinema? How is the subway system developing in your country? What transportation do you use the most?"
-        ]
-    },
-    {
-        "number": "Topic 103",
-        "questions": [
-            "Part 2: Describe a sport you watched and would like to try. You should say: - When and where you watched it - Why you watched it - Who you watched it with - Whether you will do it in the future - And explain how you felt about it",
-            "Part 3: Why do many people like to buy expensive sportswear for playing ball games? What kinds of sports games do young and old people like to watch in your country? Why do so many people like to watch sports games? Do you think that international sports games are for money? Many advertisers like to use sports stars endorsements. What do you think are the reasons? Do you think sportsmen would use the sports gears promoted in the commercials?"
-        ]
-    },
-    {
-        "number": "Topic 104",
-        "questions": [
-            "Part 2: Describe a new skill that you learned. You should say: - What it was - How long you learned it - Why you learned it - And explain how long you will use the skill",
-            "Part 3: What skills are important to learn for the future? How can people learn new skills effectively? What are the challenges of learning new skills? How does technology influence the way we learn new skills? Why is it important to keep learning new skills throughout life? What skills do employers look for in job candidates?"
-        ]
-    },
-    {
-        "number": "Topic 105",
-        "questions": [
-            "Part 2: Describe an occasion when you used a map (e.g. a paper map, an electronic map) that was useful. You should say: - When and where you used the map - What it was like - How useful it was - Why you used it - And explain how you felt about the experience",
-            "Part 3: What do people usually do when they get lost? What are the differences between paper and digital maps? What do you think of in-car GPS navigation systems? What do people often do with a map? Why do some people prefer to use a paper map? How does learning to read a map help you learn more about your country?"
-        ]
-    },
-    {
-        "number": "Topic 106",
-        "questions": [
-            "Part 2: Describe a person who is good at making people feel welcome in his/her home. You should say: - Who this person is - How you knew him/her - How he/she makes you feel welcome - And explain why you think he/she is good at making people feel welcome",
-            "Part 3: Do people in your country often invite others to their homes? Why? What do you think of serving food to visitors? What kind of people do you think are more likely to invite others to their homes? Who are more likely to invite others to their homes, people in the countryside or people in the city? Are tourist attractions in the countryside more popular than those in the cities? What facilities are there in the tourist attractions in your country?"
-        ]
-    },
-    {
-        "number": "Topic 107",
-        "questions": [
-            "Part 2: Describe a job that you would not like to do. You should say: - What it is - How you know about the job - Whether the job is difficult or not - And explain why you would not like to do it",
-            "Part 3: What kind of jobs do young Chinese people like to do? Do young Chinese people prefer to choose an interesting job or a job with a high salary? Do you think it is easier to get a job now than in the past? Is it important to be successful in a job? Do you think AI will take over many jobs? Can AI improve people’s lives? If so, how?"
-        ]
-    },
-    {
-        "number": "Topic 108",
-        "questions": [
-            "Part 2: Describe a movie/film that you felt strongly about. You should say: - What it is about - When you watched it - Where you watched it - And explain why you felt strongly about it",
-            "Part 3: Do most people prefer to watch movies at home or in a cinema? Why? What are the advantages of going to the cinema with friends? Is going to the cinema still popular? What kind of movies do you think need to be seen in the cinema to be fully appreciated? What can cinemas do to attract more audiences? Do you think people can learn new cultures through movies?"
-        ]
-    },
-    {
-        "number": "Topic 109",
-        "questions": [
-            "Part 2: Describe a time you had to finish something quickly. You should say: - What it was - When it happened - How you finished it - Why you had to finish it quickly - And explain how you felt about it",
-            "Part 3: On what occasions do people have to do things in a hurry? Why do some people spend a long time on having a meal? Would people feel more satisfied if they finished doing something quickly? What kinds of jobs need to be done quickly? What are some examples of work that needs to be done quickly? What might make some people more productive than others in completing tasks?"
-        ]
-    },
-    {
-        "number": "Topic 110",
-        "questions": [
-            "Part 2: Describe a party that you enjoyed. You should say: - When and where the party was held - Who attended the party - What kind of party it was - What you did in the party - And explain why you enjoyed this party",
-            "Part 3: Why do people like parties? Why do some people not like going to parties? Do you think those who tend to stay at home are less healthy than those who often attend parties? Do you think music and dancing are a must at a party? What would you do if you were disturbed by a neighbour’s party? What are the differences between holding a party at home and in a public place?"
-        ]
-    },
-    {
-        "number": "Topic 111",
-        "questions": [
-            "Part 2: Describe a place in your country that you think is interesting. You should say: - Where it is - How you knew it - What special features it has - And explain why you think it is interesting",
-            "Part 3: How can people access travel information? Do people have different personalities in different regions of your country? What causes the differences between different regions of your country? Is it just youngsters who like to try new things, or do people of your parents' age also like to try new things? Is a great tourist destination also a good place to live? Why do people who go to live in small towns think these towns are more interesting than the big cities?"
-        ]
-    },
-    {
-        "number": "Topic 112",
-        "questions": [
-            "Part 2: Describe a historical period/moment you would like to learn more about. You should say: - What you are interested in - When it happened - What you know about it - And why you would like to learn more",
-            "Part 3: Should everyone know history? In what ways can children learn history? What are the differences between learning history from books and from videos? Is it difficult to protect and preserve historic buildings? Who should be responsible for protecting historic buildings? Who should pay for the preservation of historic buildings?"
+            "Part 2: Describe a time when you were caught in a traffic jam. You should say: - When it happened - Where it happened - How you passed the time while waiting - And explain how you felt when you were in that traffic jam",
+            "Part 3: When do traffic jams usually happen? What are the causes of traffic jams? Do you think the problem of traffic congestion will be eased in the future or will it become worse?"
         ]
     }
 ]
@@ -970,13 +754,15 @@ topics = [
 def select_random_topics(part, num_topics):
     selected_topics = []
 
+    last_part1_index = 49
+
     if part == 1:
-        part_topics = topics[:49]  # Part 1 的主题范围
+        part_topics = topics[:last_part1_index]  # Part 1 的主题范围
         while len(selected_topics) < num_topics:
             random_index = random.randint(0, len(part_topics) - 1)
             selected_topics.append(part_topics.pop(random_index))
     elif part in (2, 3):
-        part_topics = topics[50:]  # Part 2 和 3 的主题范围
+        part_topics = topics[last_part1_index+1:]  # Part 2 和 3 的主题范围
         random_index = random.randint(0, len(part_topics) - 1)
         selected_topics.append(part_topics[random_index])
 

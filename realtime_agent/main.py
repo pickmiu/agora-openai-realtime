@@ -172,7 +172,7 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
             system_message=system_message,
             voice=voice,
             turn_detection=ServerVADUpdateParams(
-                type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=200
+                type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500
             ),
             azure_base_url=azure_base_url,
             azure_api_key=azure_api_key,

@@ -1,5 +1,6 @@
 import asyncio
 import functools
+import os
 from datetime import datetime
 
 
@@ -47,3 +48,10 @@ class PCMWriter:
                 functools.partial(write_pcm_to_file, self.buffer[:], self.file_name),
             )
         self.buffer.clear()
+
+
+def get_callback_base_url(channel_name: str) -> str:
+    if "online" in channel_name:
+        return os.environ.get("WEB_END_CALLBACK_URL")
+    else:
+        return os.environ.get("TEST_WEB_END_CALLBACK_URL")

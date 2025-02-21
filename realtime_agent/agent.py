@@ -2,6 +2,7 @@ import asyncio
 import base64
 import logging
 import os
+import utils
 from builtins import anext
 from typing import Any
 import httpx
@@ -147,7 +148,8 @@ class RealtimeKitAgent:
             logger.error(error)
             if error.status == 401:
                 # 401 feedback web-end resource is not unavailable
-                await asyncio.create_task(cls.connection_fail_feedback(inference_config.azure_base_url,
+                await asyncio.create_task(cls.connection_fail_feedback(channel.channelId,
+                                                                       inference_config.azure_base_url,
                                                                        inference_config.azure_deployment))
         finally:
             await channel.disconnect()
@@ -417,7 +419,7 @@ class RealtimeKitAgent:
                 "tokenUsage": asdict(self.token_usage)
             }
 
-            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL")+"/conversation-end", json=request_body)
+            response = await client.post(utils.get_callback_base_url(self.channel.channelId)+"/conversation-end", json=request_body)
 
             # 检查响应状态码
             if response.status_code == 200:
@@ -426,14 +428,15 @@ class RealtimeKitAgent:
                 logger.warning("Feedback to web-end conversation_end fail")
 
     @classmethod
-    async def connection_fail_feedback(cls, azure_base_url: str, deployment: str):
+    async def connection_fail_feedback(cls, channel_name: str, azure_base_url: str, deployment: str):
         async with httpx.AsyncClient() as client:
             request_body = {
+                "channelName": channel_name,
                 "azureBaseUrl": azure_base_url,
                 "deployment": deployment
             }
 
-            response = await client.post(os.environ.get("WEB_END_CALLBACK_URL")+"/connection-fail", json=request_body)
+            response = await client.post(utils.get_callback_base_url(channel_name)+"/connection-fail", json=request_body)
 
             # 检查响应状态码
             if response.status_code == 200:

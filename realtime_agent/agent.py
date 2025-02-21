@@ -424,7 +424,7 @@ class RealtimeKitAgent:
                 "deployment": self.inference_config.azure_deployment,
                 "tokenUsage": asdict(self.token_usage)
             }
-            logger.info(get_callback_base_url(self.channel.channelId))
+
             response = await client.post(get_callback_base_url(self.channel.channelId)+"/conversation-end", json=request_body)
 
             # 检查响应状态码

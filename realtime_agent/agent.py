@@ -2,7 +2,6 @@ import asyncio
 import base64
 import logging
 import os
-import utils
 from builtins import anext
 from typing import Any
 import httpx
@@ -23,7 +22,7 @@ from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAud
     SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
-from .utils import PCMWriter
+from .utils import PCMWriter, get_callback_base_url
 from dataclasses import asdict
 
 # Set up the logger with color and timestamp support

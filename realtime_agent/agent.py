@@ -418,7 +418,7 @@ class RealtimeKitAgent:
                 "tokenUsage": asdict(self.token_usage)
             }
 
-            response = await client.post(utils.get_callback_base_url(self.channel.channelId)+"/conversation-end", json=request_body)
+            response = await client.post(get_callback_base_url(self.channel.channelId)+"/conversation-end", json=request_body)
 
             # 检查响应状态码
             if response.status_code == 200:
@@ -435,7 +435,7 @@ class RealtimeKitAgent:
                 "deployment": deployment
             }
 
-            response = await client.post(utils.get_callback_base_url(channel_name)+"/connection-fail", json=request_body)
+            response = await client.post(get_callback_base_url(channel_name)+"/connection-fail", json=request_body)
 
             # 检查响应状态码
             if response.status_code == 200:

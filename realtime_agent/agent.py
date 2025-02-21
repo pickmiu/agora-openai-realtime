@@ -22,7 +22,7 @@ from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAud
     SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
-from .utils import PCMWriter, get_callback_base_url
+from .utils import PCMWriter
 from dataclasses import asdict
 
 # Set up the logger with color and timestamp support
@@ -53,6 +53,13 @@ async def wait_for_remote_user(channel: Channel) -> int:
     except Exception as e:
         logger.error(f"Error waiting for remote user: {e}")
         raise
+
+
+def get_callback_base_url(channel_name: str) -> str:
+    if "online" in channel_name:
+        return os.environ.get("WEB_END_CALLBACK_URL")
+    else:
+        return os.environ.get("TEST_WEB_END_CALLBACK_URL")
 
 
 @dataclass(frozen=True, kw_only=True)

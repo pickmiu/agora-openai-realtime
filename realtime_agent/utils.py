@@ -16,13 +16,6 @@ def generate_file_name(prefix: str) -> str:
     return f"{prefix}_{timestamp}.pcm"
 
 
-def get_callback_base_url(channel_name: str) -> str:
-    if "online" in channel_name:
-        return os.environ.get("WEB_END_CALLBACK_URL")
-    else:
-        return os.environ.get("TEST_WEB_END_CALLBACK_URL")
-
-
 class PCMWriter:
     def __init__(self, prefix: str, write_pcm: bool, buffer_size: int = 1024 * 64):
         self.write_pcm = write_pcm

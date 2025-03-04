@@ -28,6 +28,7 @@ from dataclasses import asdict
 # Set up the logger with color and timestamp support
 logger = setup_logger(name=__name__, log_level=logging.INFO)
 
+
 def _monitor_queue_size(queue: asyncio.Queue, queue_name: str, threshold: int = 5) -> None:
     queue_size = queue.qsize()
     if queue_size > threshold:
@@ -71,6 +72,7 @@ class InferenceConfig:
     azure_api_key: str
     azure_deployment: str
     azure_api_version: str
+
 
 class RealtimeKitAgent:
     engine: RtcEngine
@@ -283,7 +285,7 @@ class RealtimeKitAgent:
             await pcm_writer.flush()
             raise  # Re-raise the cancelled exception to properly exit the task
 
-    async def handle_funtion_call(self, message: ResponseFunctionCallArgumentsDone) -> None:
+    async def handle_function_call(self, message: ResponseFunctionCallArgumentsDone) -> None:
         function_call_response = await self.tools.execute_tool(message.name, message.arguments)
         logger.info(f"Function call response: {function_call_response}")
         await self.connection.send_request(
@@ -327,7 +329,7 @@ class RealtimeKitAgent:
 
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
-            # logger.info(f"Received message {message=}")
+            logger.info(f"Received message {message=}")
             match message:
                 case ResponseAudioDelta():
                     # logger.info("Received audio message")
@@ -404,7 +406,7 @@ class RealtimeKitAgent:
                 case ResponseFunctionCallArgumentsDone():
                     logger.info(f"ResponseFunctionCallArgumentsDone: {message=}")
                     asyncio.create_task(
-                        self.handle_funtion_call(message)
+                        self.handle_function_call(message)
                     )
                 case ResponseFunctionCallArgumentsDelta():
                     pass

@@ -4,6 +4,7 @@ import logging
 import os
 import signal
 from multiprocessing import Process
+from typing import Callable, Awaitable
 
 import psutil
 from aiohttp import web
@@ -272,9 +273,27 @@ def handle_signal(signum, frame):
         loop.stop()
 
 
+@web.middleware
+async def error_middleware(
+    request: web.Request,
+    handler: Callable[[web.Request], Awaitable[web.StreamResponse]],
+) -> web.StreamResponse:
+    try:
+        return await handler(request)
+    except web.HTTPException as ex:
+        # 捕获 HTTP 异常并返回对应的错误响应
+        logger.error(f"Unhandled http exception: {ex}")
+        return web.Response(status=ex.status, text=str(ex))
+    except asyncio.CancelledError:
+        raise
+    except Exception as ex:
+        logger.error(f"Unhandled server exception: {ex}")
+        return web.Response(status=500, text="Server Internal Error")
+
+
 # Main aiohttp application setup
 async def init_app():
-    app = web.Application()
+    app = web.Application(middlewares=[error_middleware])
 
     # Add cleanup task to run on app exit
     app.on_cleanup.append(shutdown)

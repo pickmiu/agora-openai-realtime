@@ -52,7 +52,7 @@ async def wait_for_remote_user(channel: Channel) -> int:
         future.cancel()
         
     except Exception as e:
-        logger.error(f"Error waiting for remote user: {e}")
+        logger.error(f"Error waiting for remote user: {e}", extra={'channelName': channel.channelId})
         raise
 
 
@@ -103,7 +103,7 @@ class RealtimeKitAgent:
         logger.info(f"Conversation used account baseUrl: {inference_config.azure_base_url} "
                     f"api_key:{inference_config.azure_api_key} "
                     f"deployment:{inference_config.azure_deployment} "
-                    f"api_version:{inference_config.azure_api_version}")
+                    f"api_version:{inference_config.azure_api_version}", extra={'channelName': channel.channelId})
         await channel.connect()
         try:
             async with RealtimeApiConnection(
@@ -137,13 +137,11 @@ class RealtimeKitAgent:
                 start_session_message = await anext(connection.listen())
                 # assert isinstance(start_session_message, messages.StartSession)
                 if isinstance(start_session_message, SessionUpdated):
-                    logger.info(
-                        f"Session started: {start_session_message.session.id} model: {start_session_message.session.model}"
-                    )
+                    logger.info(f"Session started: {start_session_message.session.id} "
+                                f"model: {start_session_message.session.model}",
+                                extra={'channelName': channel.channelId})
                 elif isinstance(start_session_message, ErrorMessage):
-                    logger.info(
-                        f"Error: {start_session_message.error}"
-                    )
+                    logger.info(f"Error: {start_session_message.error}", extra={'channelName': channel.channelId})
 
                 agent = cls(
                     connection=connection,
@@ -179,35 +177,34 @@ class RealtimeKitAgent:
         self.write_pcm = os.environ.get("WRITE_AGENT_PCM", "false") == "true"
         self.token_usage = None
         self.inference_config = inference_config
-        logger.info(f"Write PCM: {self.write_pcm}")
+        logger.info(f"Write PCM: {self.write_pcm}", extra={'channelName': channel.channelId})
 
     async def run(self) -> None:
         try:
 
             def log_exception(t: asyncio.Task[Any]) -> None:
                 if not t.cancelled() and t.exception():
-                    logger.error(
-                        "unhandled exception",
-                        exc_info=t.exception(),
-                    )
+                    logger.error("unhandled exception", exc_info=t.exception(),
+                                 extra={'channelName': self.channel.channelId})
 
             def on_stream_message(agora_local_user, user_id, stream_id, data, length) -> None:
-                logger.info(f"Received stream message with length: {length}")
+                logger.info(f"Received stream message with length: {length}",
+                            extra={'channelName': self.channel.channelId})
 
             self.channel.on("stream_message", on_stream_message)
 
-            logger.info("Waiting for remote user to join")
+            logger.info("Waiting for remote user to join", extra={'channelName': self.channel.channelId})
             self.subscribe_user = await wait_for_remote_user(self.channel)
-            logger.info(f"Subscribing to user {self.subscribe_user}")
+            logger.info(f"Subscribing to user {self.subscribe_user}", extra={'channelName': self.channel.channelId})
             await self.channel.subscribe_audio(self.subscribe_user)
 
             async def on_user_left(
                 agora_rtc_conn: RTCConnection, user_id: int, reason: int
             ):
-                logger.info(f"User left: {user_id}")
+                logger.info(f"User left: {user_id}", extra={'channelName': self.channel.channelId})
                 if self.subscribe_user == user_id:
                     self.subscribe_user = None
-                    logger.info("Subscribed user left, disconnecting")
+                    logger.info("Subscribed user left, disconnecting", extra={'channelName': self.channel.channelId})
                     await self.channel.disconnect()
 
             self.channel.on("user_left", on_user_left)
@@ -215,7 +212,7 @@ class RealtimeKitAgent:
             disconnected_future = asyncio.Future[None]()
 
             def callback(agora_rtc_conn: RTCConnection, conn_info: RTCConnInfo, reason):
-                logger.info(f"Connection state changed: {conn_info.state}")
+                logger.info(f"Connection state changed: {conn_info.state}", extra={'channelName': self.channel.channelId})
                 if conn_info.state == 1:
                     if not disconnected_future.done():
                         disconnected_future.set_result(None)
@@ -231,13 +228,13 @@ class RealtimeKitAgent:
 
             await disconnected_future
             # send feedback to web-end if token not none
-            logger.info(f"Total token usage: {self.token_usage}")
+            logger.info(f"Total token usage: {self.token_usage}", extra={'channelName': self.channel.channelId})
             await asyncio.create_task(self.conversation_end_feedback())
-            logger.info("Agent finished running")
+            logger.info("Agent finished running", extra={'channelName': self.channel.channelId})
         except asyncio.CancelledError:
-            logger.info("Agent cancelled")
+            logger.info("Agent cancelled", extra={'channelName': self.channel.channelId})
         except Exception as e:
-            logger.error(f"Error running agent: {e}")
+            logger.error(f"Error running agent: {e}", extra={'channelName': self.channel.channelId})
             raise
 
     async def rtc_to_model(self) -> None:
@@ -287,7 +284,7 @@ class RealtimeKitAgent:
 
     async def handle_function_call(self, message: ResponseFunctionCallArgumentsDone) -> None:
         function_call_response = await self.tools.execute_tool(message.name, message.arguments)
-        logger.info(f"Function call response: {function_call_response}")
+        logger.info(f"Function call response: {function_call_response}", extra={'channelName': self.channel.channelId})
         await self.connection.send_request(
             ItemCreate(
                 item = FunctionCallOutputItemParam(
@@ -329,7 +326,7 @@ class RealtimeKitAgent:
 
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
-            logger.info(f"Received message {message=}")
+            # logger.info(f"Received message {message=}")
             match message:
                 case ResponseAudioDelta():
                     # logger.info("Received audio message")
@@ -345,7 +342,7 @@ class RealtimeKitAgent:
                     ))
 
                 case ResponseAudioTranscriptDone():
-                    logger.info(f"Text message done: {message=}")
+                    logger.info(f"Text message done: {message=}", extra={'channelName': self.channel.channelId})
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
                             message=to_json(message), msg_id=message.item_id
@@ -356,12 +353,12 @@ class RealtimeKitAgent:
                     # clear the audio queue so audio stops playing
                     while not self.audio_queue.empty():
                         self.audio_queue.get_nowait()
-                    logger.info(f"TMS:InputAudioBufferSpeechStarted: item_id: {message.item_id}")
+                    logger.info(f"TMS:InputAudioBufferSpeechStarted: item_id: {message.item_id}", extra={'channelName': self.channel.channelId})
                 case InputAudioBufferSpeechStopped():
-                    logger.info(f"TMS:InputAudioBufferSpeechStopped: item_id: {message.item_id}")
+                    logger.info(f"TMS:InputAudioBufferSpeechStopped: item_id: {message.item_id}", extra={'channelName': self.channel.channelId})
                     pass
                 case ItemInputAudioTranscriptionCompleted():
-                    logger.info(f"ItemInputAudioTranscriptionCompleted: {message=}")
+                    logger.info(f"ItemInputAudioTranscriptionCompleted: {message=}", extra={'channelName': self.channel.channelId})
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
                             message=to_json(message), msg_id=message.item_id
@@ -369,55 +366,66 @@ class RealtimeKitAgent:
                     ))
                 #  InputAudioBufferCommitted
                 case InputAudioBufferCommitted():
+                    logger.info(f"InputAudioBufferCommitted: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 case ItemCreated():
+                    logger.info(f"ItemCreated: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 # ResponseCreated
                 case ResponseCreated():
+                    logger.info(f"ResponseCreated: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 # ResponseDone
                 case ResponseDone():
                     # This only represents the token for this dialogue
                     # the entire conversation needs to be accumulated
-                    logger.info(f"ResponseDone: {message=}")
+                    logger.info(f"ResponseDone: {message=}", extra={'channelName': self.channel.channelId})
                     self.accumulate_token(message.response.usage)
                     pass
 
                 # ResponseOutputItemAdded
                 case ResponseOutputItemAdded():
+                    logger.info(f"ResponseOutputItemAdded: {message=}", extra={'channelName': self.channel.channelId})
                     pass
 
                 # ResponseContenPartAdded
                 case ResponseContentPartAdded():
+                    logger.info(f"ResponseContentPartAdded: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 # ResponseAudioDone
                 case ResponseAudioDone():
+                    logger.info(f"ResponseAudioDone: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 # ResponseContentPartDone
                 case ResponseContentPartDone():
+                    logger.info(f"ResponseContentPartDone: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 # ResponseOutputItemDone
                 case ResponseOutputItemDone():
+                    logger.info(f"ResponseOutputItemDone: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 case SessionUpdated():
+                    logger.info(f"SessionUpdated: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 case RateLimitsUpdated():
+                    logger.info(f"RateLimitsUpdated: {message=}", extra={'channelName': self.channel.channelId})
                     pass
                 case ResponseFunctionCallArgumentsDone():
-                    logger.info(f"ResponseFunctionCallArgumentsDone: {message=}")
+                    logger.info(f"ResponseFunctionCallArgumentsDone: {message=}", extra={'channelName': self.channel.channelId})
                     asyncio.create_task(
                         self.handle_function_call(message)
                     )
                 case ResponseFunctionCallArgumentsDelta():
+                    logger.info(f"ResponseFunctionCallArgumentsDelta: {message=}", extra={'channelName': self.channel.channelId})
                     pass
 
                 case _:
-                    logger.warning(f"Unhandled message {message=}")
+                    logger.warning(f"Unhandled message {message=}", extra={'channelName': self.channel.channelId})
 
     async def conversation_end_feedback(self):
         async with httpx.AsyncClient() as client:
             if self.token_usage is None:
-                logger.info("Token is None")
+                logger.info("Token is None", extra={'channelName': self.channel.channelId})
                 return
 
             request_body = {
@@ -431,9 +439,9 @@ class RealtimeKitAgent:
 
             # 检查响应状态码
             if response.status_code == 200:
-                logger.info("Feedback to web-end conversation_end success")
+                logger.info("Feedback to web-end conversation_end success", extra={'channelName': self.channel.channelId})
             else:
-                logger.warning("Feedback to web-end conversation_end fail")
+                logger.warning("Feedback to web-end conversation_end fail", extra={'channelName': self.channel.channelId})
 
     @classmethod
     async def connection_fail_feedback(cls, channel_name: str, azure_base_url: str, deployment: str):
@@ -448,6 +456,6 @@ class RealtimeKitAgent:
 
             # 检查响应状态码
             if response.status_code == 200:
-                logger.info("Feedback to web-end connection_fail success")
+                logger.info("Feedback to web-end connection_fail success", extra={'channelName': channel_name})
             else:
-                logger.warning("Feedback to web-end connection_fail fail")
+                logger.warning("Feedback to web-end connection_fail fail", extra={'channelName': channel_name})

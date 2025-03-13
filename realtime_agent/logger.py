@@ -55,6 +55,15 @@ def setup_logger(
 
     handler.setFormatter(formatter)
 
+    class CustomFilter(logging.Filter):
+        def filter(self, record):
+            # 如果日志记录中没有 channelName，设置一个默认值
+            if not hasattr(record, 'channelName'):
+                record.channelName = ''
+            return True
+
+    handler.addFilter(CustomFilter())
+
     # Add the handler to the logger
     logger.addHandler(handler)
 

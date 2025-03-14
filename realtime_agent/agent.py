@@ -19,7 +19,8 @@ from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAud
     ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, \
     ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, \
     ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, ServerVADUpdateParams, \
-    SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails
+    SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails, \
+    UserMessageItemParam
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
 from .utils import PCMWriter
@@ -222,10 +223,8 @@ class RealtimeKitAgent:
             asyncio.create_task(self.rtc_to_model()).add_done_callback(log_exception)
             asyncio.create_task(self.model_to_rtc()).add_done_callback(log_exception)
 
-            asyncio.create_task(self._process_model_messages()).add_done_callback(
-                log_exception
-            )
-
+            asyncio.create_task(self._process_model_messages()).add_done_callback(log_exception)
+            asyncio.create_task(self.init_greet()).add_done_callback(log_exception)
             await disconnected_future
             # send feedback to web-end if token not none
             logger.info(f"Total token usage: {self.token_usage}", extra={'channelName': self.channel.channelId})
@@ -459,3 +458,18 @@ class RealtimeKitAgent:
                 logger.info("Feedback to web-end connection_fail success", extra={'channelName': channel_name})
             else:
                 logger.warning("Feedback to web-end connection_fail fail", extra={'channelName': channel_name})
+
+    # Let the AI talk firstly after starting the conversation
+    async def init_greet(self):
+        await self.connection.send_request(
+            ItemCreate(
+                item=UserMessageItemParam(
+                    role="user",
+                    content=[{'type': 'input_text', 'text': 'hello'}]
+                )
+            )
+        )
+        await self.connection.send_request(
+            ResponseCreate()
+        )
+        logger.info("init_greet has sent", extra={'channelName': self.channel.channelId})

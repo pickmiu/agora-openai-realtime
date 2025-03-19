@@ -9,22 +9,22 @@ class AgentTools(ToolContext):
     def __init__(self) -> None:
         super().__init__()
         
-        # create multiple functions here as per requirement
-        self.register_function(
-            name="get_avg_temp",
-            description="Returns average temperature of a country",
-            parameters={
-                "type": "object",
-                "properties": {
-                    "country": {
-                        "type": "string",
-                        "description": "Name of country",
-                    },
-                },
-                "required": ["country"],
-            },
-            fn=self._get_avg_temperature_by_country_name,
-        )
+        # # create multiple functions here as per requirement
+        # self.register_function(
+        #     name="get_avg_temp",
+        #     description="Returns average temperature of a country",
+        #     parameters={
+        #         "type": "object",
+        #         "properties": {
+        #             "country": {
+        #                 "type": "string",
+        #                 "description": "Name of country",
+        #             },
+        #         },
+        #         "required": ["country"],
+        #     },
+        #     fn=self._get_avg_temperature_by_country_name,
+        # )
 
     async def _get_avg_temperature_by_country_name(
         self,

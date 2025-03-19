@@ -10,10 +10,10 @@ class IeltsAgentTools(ToolContext):
     def __init__(self) -> None:
         super().__init__()
 
-        # create multiple functions here as per requirement
-        self.register_function(
-            name="get_topics_and_questions",
-            parameters={},
-            description="Returns topics and questions in IELTS",
-            fn=get_topics_and_questions,
-        )
+        # # create multiple functions here as per requirement
+        # self.register_function(
+        #     name="get_topics_and_questions",
+        #     parameters={},
+        #     description="Returns topics and questions in IELTS",
+        #     fn=get_topics_and_questions,
+        # )

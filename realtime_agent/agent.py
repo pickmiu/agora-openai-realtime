@@ -19,7 +19,7 @@ from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAud
     ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, \
     ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, \
     ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, ServerVADUpdateParams, \
-    SessionUpdate, SessionUpdateParams, SessionUpdated, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails, \
+    SessionUpdate, SessionUpdateParams, SessionUpdated, SystemMessageItemParam, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails, \
     UserMessageItemParam
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
@@ -463,9 +463,9 @@ class RealtimeKitAgent:
     async def init_greet(self):
         await self.connection.send_request(
             ItemCreate(
-                item=UserMessageItemParam(
-                    role="user",
-                    content=[{'type': 'input_text', 'text': 'hello'}]
+                item=SystemMessageItemParam(
+                    role="system",
+                    content=[{'type': 'input_text', 'text': 'start the conversation'}]
                 )
             )
         )

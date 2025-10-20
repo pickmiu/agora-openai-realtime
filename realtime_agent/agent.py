@@ -371,7 +371,7 @@ class RealtimeKitAgent:
                     # The purpose of sending conversation level items is to identify the order of transcription in the front
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
-                            message=to_json(message), msg_id=message.item_id
+                            message=to_json(message), msg_id=message.item.id
                         )
                     ))
                 # ResponseCreated

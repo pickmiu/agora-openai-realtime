@@ -339,7 +339,6 @@ class RealtimeKitAgent:
                             message=to_json(message), msg_id=message.item_id
                         )
                     ))
-
                 case ResponseAudioTranscriptDone():
                     logger.info(f"Text message done: {message=}", extra={'channelName': self.channel.channelId})
                     asyncio.create_task(self.channel.chat.send_message(
@@ -369,7 +368,12 @@ class RealtimeKitAgent:
                     pass
                 case ItemCreated():
                     logger.info(f"ItemCreated: {message=}", extra={'channelName': self.channel.channelId})
-                    pass
+                    # The purpose of sending conversation level items is to identify the order of transcription in the front
+                    asyncio.create_task(self.channel.chat.send_message(
+                        ChatMessage(
+                            message=to_json(message), msg_id=message.item_id
+                        )
+                    ))
                 # ResponseCreated
                 case ResponseCreated():
                     logger.info(f"ResponseCreated: {message=}", extra={'channelName': self.channel.channelId})

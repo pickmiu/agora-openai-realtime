@@ -1,18 +1,21 @@
 import json
 
 from dataclasses import dataclass, asdict, field, is_dataclass
-from typing import Any, Dict, Literal, Optional, List, Set, Union
+from typing import Any, Dict, Literal, Optional, List, Set, Union, get_origin, get_args
 from enum import Enum
 import uuid
 
 PCM_SAMPLE_RATE = 24000
 PCM_CHANNELS = 1
 
+
 def generate_event_id() -> str:
     return str(uuid.uuid4())
 
+
 # Enums
 class Voices(str, Enum):
+    # Legacy voices
     Amuch = "amuch"
     Dan = "dan"
     Elan = "elan"
@@ -22,24 +25,36 @@ class Voices(str, Enum):
     Cove = "cove"
     Ember = "ember"
     Jupiter = "jupiter"
+    # Current supported voices (as per API documentation)
     Alloy = "alloy"
+    Ash = "ash"
+    Ballad = "ballad"
+    Coral = "coral"
     Echo = "echo"
+    Sage = "sage"
     Shimmer = "shimmer"
+    Verse = "verse"
+    Marin = "marin"  # Recommended for best quality
+    Cedar = "cedar"  # Recommended for best quality
+
 
 class AudioFormats(str, Enum):
     PCM16 = "pcm16"
     G711_ULAW = "g711_ulaw"
     G711_ALAW = "g711_alaw"
 
+
 class ItemType(str, Enum):
     Message = "message"
     FunctionCall = "function_call"
     FunctionCallOutput = "function_call_output"
 
+
 class MessageRole(str, Enum):
     System = "system"
     User = "user"
     Assistant = "assistant"
+
 
 class ContentType(str, Enum):
     InputText = "input_text"
@@ -47,13 +62,16 @@ class ContentType(str, Enum):
     Text = "text"
     Audio = "audio"
 
+
 @dataclass
 class FunctionToolChoice:
     name: str  # Name of the function
     type: str = "function"  # Fixed value for type
 
+
 # ToolChoice can be either a literal string or FunctionToolChoice
 ToolChoice = Union[str, FunctionToolChoice]  # "none", "auto", "required", or FunctionToolChoice
+
 
 @dataclass
 class RealtimeError:
@@ -63,50 +81,132 @@ class RealtimeError:
     param: Optional[str] = None  # Optional parameter related to the error
     event_id: Optional[str] = None  # Optional event ID for tracing
 
+
 @dataclass
 class InputAudioTranscription:
     model: str = "whisper-1"  # Default transcription model is "whisper-1"
+    language: Optional[str] = None  # The language of the input audio in ISO-639-1(e.g. en) format will improve accuracy and latency.
+    prompt: Optional[str] = None  # Optional text to guide the model's style
+
 
 @dataclass
 class ServerVADUpdateParams:
-    threshold: Optional[float] = None  # Threshold for voice activity detection
-    prefix_padding_ms: Optional[int] = None  # Amount of padding before the voice starts (in milliseconds)
-    silence_duration_ms: Optional[int] = None  # Duration of silence before considering speech stopped (in milliseconds)
+    threshold: Optional[float] = None  # Threshold for voice activity detection (0.0 to 1.0), defaults to 0.5
+    prefix_padding_ms: Optional[int] = None  # Amount of padding before the voice starts (in milliseconds), defaults to 300ms
+    silence_duration_ms: Optional[int] = None  # Duration of silence before considering speech stopped (in milliseconds), defaults to 500ms
+    create_response: Optional[bool] = None  # Whether to automatically generate a response when VAD stop event occurs
+    idle_timeout_ms: Optional[int] = None  # Optional timeout after which a model response will be triggered automatically
+    interrupt_response: Optional[bool] = None  # Whether to automatically interrupt any ongoing response when VAD start event occurs
     type: str = "server_vad"  # Fixed value for VAD type
+
+
+@dataclass
+class SemanticVADUpdateParams:
+    eagerness: Optional[Literal["low", "medium", "high", "auto"]] = None  # The eagerness of the model to respond
+    create_response: Optional[bool] = None  # Whether to automatically generate a response when VAD stop event occurs
+    interrupt_response: Optional[bool] = None  # Whether to automatically interrupt any ongoing response when VAD start event occurs
+    type: str = "semantic_vad"  # Fixed value for Semantic VAD type
+
+
+@dataclass
+class TokenLimits:
+    post_instructions: Optional[int] = None  # Maximum tokens allowed in the conversation after instructions
+
+
+@dataclass
+class RetentionRatioTruncation:
+    retention_ratio: float  # Fraction of post-instruction conversation tokens to retain (0.0 - 1.0)
+    type: str = "retention_ratio"  # Use retention ratio truncation
+    token_limits: Optional[TokenLimits] = None  # Optional custom token limits for this truncation strategy
+
+
+# Truncation can be either a string ("auto", "disabled") or RetentionRatioTruncation object
+Truncation = Union[str, RetentionRatioTruncation]
+
+
+# Audio format related classes
+@dataclass
+class PCMAudioFormat:
+    """PCM audio format with 24kHz sample rate"""
+    rate: int = 24000  # The sample rate of the audio. Always 24000
+    type: str = "audio/pcm"  # The audio format. Always audio/pcm
+
+
+@dataclass
+class PCMUAudioFormat:
+    """G.711 μ-law audio format"""
+    type: str = "audio/pcmu"  # The audio format. Always audio/pcmu
+
+
+@dataclass
+class PCMAAudioFormat:
+    """G.711 A-law audio format"""
+    type: str = "audio/pcma"  # The audio format. Always audio/pcma
+
+
+# Union type for audio formats
+AudioFormatType = Union[PCMAudioFormat, PCMUAudioFormat, PCMAAudioFormat]
+
+
+@dataclass
+class NoiseReduction:
+    """Configuration for input audio noise reduction"""
+    type: Literal["near_field", "far_field"]  # Type of noise reduction: near_field for headphones, far_field for laptop/conference mics
+
+
+@dataclass
+class InputAudioConfig:
+    """Configuration for input audio"""
+    format: Optional[AudioFormatType] = None  # The format of the input audio
+    noise_reduction: Optional[NoiseReduction] = None  # Noise reduction configuration, can be null to turn off
+    transcription: Optional[InputAudioTranscription] = None  # Transcription configuration, can be null to turn off
+    turn_detection: Optional[Union[ServerVADUpdateParams, SemanticVADUpdateParams]] = None  # Turn detection configuration, can be null to turn off
+
+
+@dataclass
+class OutputAudioConfig:
+    """Configuration for output audio"""
+    format: Optional[AudioFormatType] = None  # The format of the output audio
+    speed: Optional[float] = None  # The speed of the model's spoken response (0.25 to 1.5), 1.0 is default
+    voice: Optional[str] = None  # The voice the model uses to respond
+
+
+@dataclass
+class AudioConfig:
+    """GA API audio configuration"""
+    input: Optional[InputAudioConfig] = None  # Input audio configuration
+    output: Optional[OutputAudioConfig] = None  # Output audio configuration
+
+
 @dataclass
 class Session:
     id: str  # The unique identifier for the session
-    model: str  # The model associated with the session (e.g., "gpt-3")
+    model: str  # The model associated with the session (e.g., "gpt-4o-realtime-preview")
     expires_at: int  # Expiration time of the session in seconds since the epoch (UNIX timestamp)
     object: str = "realtime.session"  # Fixed value indicating the object type
-    modalities: Set[str] = field(default_factory=lambda: {"text", "audio"})  # Set of allowed modalities (e.g., "text", "audio")
+    type: Optional[str] = None  # Session type: "realtime" for speech-to-speech, "transcription" for transcription
+    audio: Optional[AudioConfig] = None  # GA API audio configuration
     instructions: Optional[str] = None  # Instructions or guidance for the session
-    voice: Voices = Voices.Alloy  # Voice configuration for audio responses, defaulting to "Alloy"
-    turn_detection: Optional[ServerVADUpdateParams] = None  # Voice activity detection (VAD) settings
-    input_audio_format: AudioFormats = AudioFormats.PCM16  # Audio format for input (e.g., "pcm16")
-    output_audio_format: AudioFormats = AudioFormats.PCM16  # Audio format for output (e.g., "pcm16")
-    input_audio_transcription: Optional[InputAudioTranscription] = None  # Audio transcription model settings (e.g., "whisper-1")
-    tools: List[Dict[str, Union[str, Any]]] = field(default_factory=list)  # List of tools available during the session
-    tool_choice: Literal["auto", "none", "required"] = "auto"  # How tools should be used in the session
-    temperature: float = 0.8  # Temperature setting for model creativity
-    max_response_output_tokens: Union[int, Literal["inf"]] = "inf"  # Maximum number of tokens in the response, or "inf" for unlimited
-    
+    max_output_tokens: Optional[Union[int, str]] = None  # Max response tokens, "inf" for infinite
+    output_modalities: Optional[Set[str]] = None  # Set of allowed modalities (e.g., "text", "audio")
+    tool_choice: Optional[ToolChoice] = None  # ToolChoice, either string or `FunctionToolChoice`
+    tools: Optional[List[Dict[str, Union[str, Any]]]] = None  # List of tools available during the session
+    truncation: Optional[Truncation] = None  # Truncation strategy: "auto", "disabled", or RetentionRatioTruncation object
+    include: Optional[List[str]] = None  # Additional fields to include in server outputs
+
 
 @dataclass
 class SessionUpdateParams:
-    model: Optional[str] = None  # Optional string to specify the model
-    modalities: Optional[Set[str]] = None  # Set of allowed modalities (e.g., "text", "audio")
+    type: Optional[str] = None  # Session type: "realtime" for speech-to-speech, "transcription" for transcription
+    audio: Optional[AudioConfig] = None  # GA API audio configuration
     instructions: Optional[str] = None  # Optional instructions string
-    voice: Optional[Voices] = None  # Voice selection, can be `None` or from `Voices` Enum
-    turn_detection: Optional[ServerVADUpdateParams] = None  # Server VAD update params
-    input_audio_format: Optional[AudioFormats] = None  # Input audio format from `AudioFormats` Enum
-    output_audio_format: Optional[AudioFormats] = None  # Output audio format from `AudioFormats` Enum
-    input_audio_transcription: Optional[InputAudioTranscription] = None  # Optional transcription model
-    tools: Optional[List[Dict[str, Union[str, any]]]] = None  # List of tools (e.g., dictionaries)
+    max_output_tokens: Optional[Union[int, str]] = None  # Max response tokens, "inf" for infinite
+    model: Optional[str] = None  # Optional string to specify the model
+    output_modalities: Optional[Set[str]] = None  # Set of allowed modalities (e.g., "text", "audio")
     tool_choice: Optional[ToolChoice] = None  # ToolChoice, either string or `FunctionToolChoice`
-    temperature: Optional[float] = None  # Optional temperature for response generation
-    max_response_output_tokens: Optional[Union[int, str]] = None  # Max response tokens, "inf" for infinite
-
+    tools: Optional[List[Dict[str, Union[str, any]]]] = None  # List of tools (e.g., dictionaries)
+    truncation: Optional[Truncation] = None  # Truncation strategy: "auto", "disabled", or RetentionRatioTruncation object
+    
 
 # Define individual message item param types
 @dataclass
@@ -117,6 +217,7 @@ class SystemMessageItemParam:
     type: str = "message"
     role: str = "system"
 
+
 @dataclass
 class UserMessageItemParam:
     content: List[dict]  # Similarly, content can be more specific
@@ -125,6 +226,7 @@ class UserMessageItemParam:
     type: str = "message"
     role: str = "user"
 
+
 @dataclass
 class AssistantMessageItemParam:
     content: List[dict]  # Content structure here depends on your schema
@@ -132,6 +234,7 @@ class AssistantMessageItemParam:
     status: Optional[str] = None
     type: str = "message"
     role: str = "assistant"
+
 
 @dataclass
 class FunctionCallItemParam:
@@ -142,11 +245,13 @@ class FunctionCallItemParam:
     id: Optional[str] = None
     status: Optional[str] = None
 
+
 @dataclass
 class FunctionCallOutputItemParam:
     call_id: str
     output: str
     id: Optional[str] = None
+    status: Optional[str] = None  # GA API: accepts no-op status field
     type: str = "function_call_output"
 
 
@@ -174,6 +279,19 @@ class ResponseItemAudioContentPart:
     type: str = "audio"
 
 
+# GA API: new output content part types
+@dataclass
+class ResponseItemOutputTextContentPart:
+    text: str
+    type: str = "output_text"  # GA API: renamed from "text"
+
+
+@dataclass
+class ResponseItemOutputAudioContentPart:
+    transcript: Optional[str]
+    type: str = "output_audio"  # GA API: renamed from "audio"
+
+
 # Union of all possible item types
 ItemParam = Union[
     SystemMessageItemParam,
@@ -181,11 +299,14 @@ ItemParam = Union[
     AssistantMessageItemParam,
     FunctionCallItemParam,
     FunctionCallOutputItemParam,
-    # azure特有
+    # Beta API content parts
     ResponseItemInputTextContentPart,
     ResponseItemInputAudioContentPart,
     ResponseItemTextContentPart,
     ResponseItemAudioContentPart,
+    # GA API content parts
+    ResponseItemOutputTextContentPart,
+    ResponseItemOutputAudioContentPart,
 ]
 
 
@@ -213,6 +334,8 @@ class EventType(str, Enum):
     INPUT_AUDIO_BUFFER_SPEECH_STOPPED = "input_audio_buffer.speech_stopped"
 
     ITEM_CREATED = "conversation.item.created"
+    ITEM_ADDED = "conversation.item.added"  # GA API: replaces conversation.item.created
+    ITEM_DONE = "conversation.item.done"  # GA API: new event for item completion
     ITEM_DELETED = "conversation.item.deleted"
     ITEM_TRUNCATED = "conversation.item.truncated"
     ITEM_INPUT_AUDIO_TRANSCRIPTION_COMPLETED = "conversation.item.input_audio_transcription.completed"
@@ -231,9 +354,17 @@ class EventType(str, Enum):
     RESPONSE_AUDIO_TRANSCRIPT_DONE = "response.audio_transcript.done"
     RESPONSE_AUDIO_DELTA = "response.audio.delta"
     RESPONSE_AUDIO_DONE = "response.audio.done"
+    # GA API event names
+    RESPONSE_OUTPUT_TEXT_DELTA = "response.output_text.delta"
+    RESPONSE_OUTPUT_TEXT_DONE = "response.output_text.done"
+    RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DELTA = "response.output_audio_transcript.delta"
+    RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DONE = "response.output_audio_transcript.done"
+    RESPONSE_OUTPUT_AUDIO_DELTA = "response.output_audio.delta"
+    RESPONSE_OUTPUT_AUDIO_DONE = "response.output_audio.done"
     RESPONSE_FUNCTION_CALL_ARGUMENTS_DELTA = "response.function_call_arguments.delta"
     RESPONSE_FUNCTION_CALL_ARGUMENTS_DONE = "response.function_call_arguments.done"
     RATE_LIMITS_UPDATED = "rate_limits.updated"
+
 
 # Base class for all ServerToClientMessages
 @dataclass
@@ -292,6 +423,21 @@ class ItemCreated(ServerToClientMessage):
     previous_item_id: Optional[str] = None
 
 
+# GA API new conversation item events
+@dataclass
+class ItemAdded(ServerToClientMessage):
+    item: ItemParam
+    type: str = EventType.ITEM_ADDED
+    previous_item_id: Optional[str] = None
+
+
+@dataclass
+class ItemDone(ServerToClientMessage):
+    item: ItemParam
+    type: str = EventType.ITEM_DONE
+    previous_item_id: Optional[str] = None
+
+
 @dataclass
 class ItemTruncated(ServerToClientMessage):
     item_id: str
@@ -318,10 +464,12 @@ class ResponseCancelledDetails:
     reason: str  # e.g., "turn_detected", "client_cancelled"
     type: str = "cancelled"
 
+
 @dataclass
 class ResponseIncompleteDetails:
     reason: str  # e.g., "max_output_tokens", "content_filter"
     type: str = "incomplete"
+
 
 @dataclass
 class ResponseError:
@@ -329,25 +477,37 @@ class ResponseError:
     message: str  # The error message describing what went wrong
     code: Optional[str] = None  # Optional error code, e.g., HTTP status code, API error code
 
+
 @dataclass
 class ResponseFailedDetails:
     error: ResponseError  # Assuming ResponseError is already defined
     type: str = "failed"
 
+
 # Union of possible status details
 ResponseStatusDetails = Union[ResponseCancelledDetails, ResponseIncompleteDetails, ResponseFailedDetails]
 
+
 # Define Usage class to handle token usage
+@dataclass
+class CachedTokensDetails:
+    text_tokens: int
+    audio_tokens: int
+
+
 @dataclass
 class InputTokenDetails:
     cached_tokens: int
     text_tokens: int
     audio_tokens: int
+    cached_tokens_details: CachedTokensDetails
+
 
 @dataclass
 class OutputTokenDetails:
     text_tokens: int
     audio_tokens: int
+
 
 @dataclass
 class Usage:
@@ -356,6 +516,7 @@ class Usage:
     output_tokens: int
     input_token_details: InputTokenDetails
     output_token_details: OutputTokenDetails
+
 
 # The Response dataclass definition
 @dataclass
@@ -440,6 +601,66 @@ class ResponseAudioDone(ServerToClientMessage):
     type: str = EventType.RESPONSE_AUDIO_DONE
 
 
+# GA API event classes
+@dataclass
+class ResponseOutputTextDelta(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    delta: str
+    type: str = EventType.RESPONSE_OUTPUT_TEXT_DELTA
+
+
+@dataclass
+class ResponseOutputTextDone(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    text: str
+    type: str = EventType.RESPONSE_OUTPUT_TEXT_DONE
+
+
+@dataclass
+class ResponseOutputAudioTranscriptDelta(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    delta: str
+    type: str = EventType.RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DELTA
+
+
+@dataclass
+class ResponseOutputAudioTranscriptDone(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    transcript: str
+    type: str = EventType.RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DONE
+
+
+@dataclass
+class ResponseOutputAudioDelta(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    delta: str
+    type: str = EventType.RESPONSE_OUTPUT_AUDIO_DELTA
+
+
+@dataclass
+class ResponseOutputAudioDone(ServerToClientMessage):
+    response_id: str
+    item_id: str
+    output_index: int
+    content_index: int
+    type: str = EventType.RESPONSE_OUTPUT_AUDIO_DONE
+
+
 @dataclass
 class ResponseFunctionCallArgumentsDelta(ServerToClientMessage):
     response_id: str
@@ -468,6 +689,7 @@ class RateLimitDetails:
     remaining: int  # The number of requests remaining in the current time window
     reset_seconds: float  # The number of seconds until the rate limit resets
 
+
 @dataclass
 class RateLimitsUpdated(ServerToClientMessage):
     rate_limits: List[RateLimitDetails]
@@ -481,6 +703,7 @@ class ResponseOutputItemAdded(ServerToClientMessage):
     item: Union[ItemParam, None]  # The added item (can be a message, function call, etc.)
     type: str = EventType.RESPONSE_OUTPUT_ITEM_ADDED  # Fixed event type
 
+
 @dataclass
 class ResponseContentPartAdded(ServerToClientMessage):
     response_id: str  # The ID of the response
@@ -490,6 +713,7 @@ class ResponseContentPartAdded(ServerToClientMessage):
     part: Union[ItemParam, None]  # The added content part
     content: Union[ItemParam, None]
     type: str = EventType.RESPONSE_CONTENT_PART_ADDED  # Fixed event type
+
 
 @dataclass
 class ResponseContentPartDone(ServerToClientMessage):
@@ -501,12 +725,14 @@ class ResponseContentPartDone(ServerToClientMessage):
     content: Union[ItemParam, None]
     type: str = EventType.RESPONSE_CONTENT_PART_ADDED  # Fixed event type
 
+
 @dataclass
 class ResponseOutputItemDone(ServerToClientMessage):
     response_id: str  # The ID of the response
     output_index: int  # Index of the output item in the response
     item: Union[ItemParam, None]  # The output item that was completed
     type: str = EventType.RESPONSE_OUTPUT_ITEM_DONE  # Fixed event type
+
 
 @dataclass
 class ItemInputAudioTranscriptionCompleted(ServerToClientMessage):
@@ -515,12 +741,14 @@ class ItemInputAudioTranscriptionCompleted(ServerToClientMessage):
     transcript: str  # The transcribed text
     type: str = EventType.ITEM_INPUT_AUDIO_TRANSCRIPTION_COMPLETED  # Fixed event type
 
+
 @dataclass
 class ItemInputAudioTranscriptionFailed(ServerToClientMessage):
     item_id: str  # The ID of the item for which transcription failed
     content_index: int  # Index of the content part that failed to transcribe
     error: ResponseError  # Error details explaining the failure
     type: str = EventType.ITEM_INPUT_AUDIO_TRANSCRIPTION_FAILED  # Fixed event type
+
 
 # Union of all server-to-client message types
 ServerToClientMessages = Union[
@@ -532,6 +760,8 @@ ServerToClientMessages = Union[
     InputAudioBufferSpeechStarted,
     InputAudioBufferSpeechStopped,
     ItemCreated,
+    ItemAdded,  # GA API
+    ItemDone,   # GA API
     ItemTruncated,
     ItemDeleted,
     ResponseCreated,
@@ -542,6 +772,13 @@ ServerToClientMessages = Union[
     ResponseAudioTranscriptDone,
     ResponseAudioDelta,
     ResponseAudioDone,
+    # GA API event types
+    ResponseOutputTextDelta,
+    ResponseOutputTextDone,
+    ResponseOutputAudioTranscriptDelta,
+    ResponseOutputAudioTranscriptDone,
+    ResponseOutputAudioDelta,
+    ResponseOutputAudioDone,
     ResponseFunctionCallArgumentsDelta,
     ResponseFunctionCallArgumentsDone,
     RateLimitsUpdated,
@@ -554,7 +791,6 @@ ServerToClientMessages = Union[
 ]
 
 
-
 # Base class for all ClientToServerMessages
 @dataclass
 class ClientToServerMessage:
@@ -565,6 +801,7 @@ class ClientToServerMessage:
 class InputAudioBufferAppend(ClientToServerMessage):
     audio: Optional[str] = field(default=None)
     type: str = EventType.INPUT_AUDIO_BUFFER_APPEND  # Default argument (has a default value)
+
 
 @dataclass
 class InputAudioBufferCommit(ClientToServerMessage):
@@ -595,7 +832,8 @@ class ItemTruncate(ClientToServerMessage):
 class ItemDelete(ClientToServerMessage):
     item_id: Optional[str] = field(default=None)
     type: str = EventType.ITEM_DELETE
-    
+
+
 @dataclass
 class ResponseCreateParams:
     commit: bool = True  # Whether the generated messages should be appended to the conversation
@@ -622,7 +860,9 @@ class ResponseCreate(ClientToServerMessage):
 class ResponseCancel(ClientToServerMessage):
     type: str = EventType.RESPONSE_CANCEL
 
+
 DEFAULT_CONVERSATION = "default"
+
 
 @dataclass
 class UpdateConversationConfig(ClientToServerMessage):
@@ -659,17 +899,46 @@ ClientToServerMessages = Union[
     SessionUpdate
 ]
 
+
 def from_dict(data_class, data):
     """Recursively convert a dictionary to a dataclass instance."""
+    if data is None:
+        return None
+    
+    # Handle Optional types
+    origin = get_origin(data_class)
+    if origin is Union:
+        args = get_args(data_class)
+        # Check if it's Optional (Union with None)
+        if type(None) in args:
+            if data is None:
+                return None
+            # Get the non-None type
+            non_none_types = [arg for arg in args if arg is not type(None)]
+            if len(non_none_types) == 1:
+                return from_dict(non_none_types[0], data)
+        # For other Union types, try each type
+        for arg in args:
+            if arg is not type(None):
+                try:
+                    return from_dict(arg, data)
+                except:
+                    continue
+        return data
+    
     if is_dataclass(data_class):  # Check if the target class is a dataclass
         fieldtypes = {f.name: f.type for f in data_class.__dataclass_fields__.values()}
         # Filter out keys that are not in the dataclass fields
         valid_data = {f: data[f] for f in fieldtypes if f in data}
         return data_class(**{f: from_dict(fieldtypes[f], valid_data[f]) for f in valid_data})
     elif isinstance(data, list):  # Handle lists of nested dataclass objects
-        return [from_dict(data_class.__args__[0], item) for item in data]
+        list_args = get_args(data_class)
+        if list_args:
+            return [from_dict(list_args[0], item) for item in data]
+        return data
     else:  # For primitive types (str, int, float, etc.), return the value as-is
         return data
+
 
 def parse_client_message(unparsed_string: str) -> ClientToServerMessage:
     data = json.loads(unparsed_string)
@@ -722,6 +991,11 @@ def parse_server_message(unparsed_string: str) -> ServerToClientMessage:
         return from_dict(InputAudioBufferSpeechStopped, data)
     elif data["type"] == EventType.ITEM_CREATED:
         return from_dict(ItemCreated, data)
+    # GA API new conversation item events
+    elif data["type"] == EventType.ITEM_ADDED:
+        return from_dict(ItemAdded, data)
+    elif data["type"] == EventType.ITEM_DONE:
+        return from_dict(ItemDone, data)
     elif data["type"] == EventType.ITEM_TRUNCATED:
         return from_dict(ItemTruncated, data)
     elif data["type"] == EventType.ITEM_DELETED:
@@ -742,6 +1016,19 @@ def parse_server_message(unparsed_string: str) -> ServerToClientMessage:
         return from_dict(ResponseAudioDelta, data)
     elif data["type"] == EventType.RESPONSE_AUDIO_DONE:
         return from_dict(ResponseAudioDone, data)
+    # GA API event types
+    elif data["type"] == EventType.RESPONSE_OUTPUT_TEXT_DELTA:
+        return from_dict(ResponseOutputTextDelta, data)
+    elif data["type"] == EventType.RESPONSE_OUTPUT_TEXT_DONE:
+        return from_dict(ResponseOutputTextDone, data)
+    elif data["type"] == EventType.RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DELTA:
+        return from_dict(ResponseOutputAudioTranscriptDelta, data)
+    elif data["type"] == EventType.RESPONSE_OUTPUT_AUDIO_TRANSCRIPT_DONE:
+        return from_dict(ResponseOutputAudioTranscriptDone, data)
+    elif data["type"] == EventType.RESPONSE_OUTPUT_AUDIO_DELTA:
+        return from_dict(ResponseOutputAudioDelta, data)
+    elif data["type"] == EventType.RESPONSE_OUTPUT_AUDIO_DONE:
+        return from_dict(ResponseOutputAudioDone, data)
     elif data["type"] == EventType.RESPONSE_FUNCTION_CALL_ARGUMENTS_DELTA:
         return from_dict(ResponseFunctionCallArgumentsDelta, data)
     elif data["type"] == EventType.RESPONSE_FUNCTION_CALL_ARGUMENTS_DONE:
@@ -762,6 +1049,29 @@ def parse_server_message(unparsed_string: str) -> ServerToClientMessage:
         return from_dict(ItemInputAudioTranscriptionFailed, data)
 
     raise ValueError(f"Unknown message type: {data['type']}")
-    
+
+
+def remove_none_values(d):
+    """Recursively remove None values and empty dicts from dictionaries"""
+    if isinstance(d, dict):
+        cleaned = {}
+        for k, v in d.items():
+            if v is not None:
+                cleaned_v = remove_none_values(v)
+                # Only include non-empty values
+                if cleaned_v != {} and cleaned_v != []:
+                    cleaned[k] = cleaned_v
+                elif not isinstance(cleaned_v, (dict, list)):
+                    cleaned[k] = cleaned_v
+        return cleaned
+    elif isinstance(d, list):
+        return [remove_none_values(item) for item in d]
+    else:
+        return d
+
+
 def to_json(obj: Union[ClientToServerMessage, ServerToClientMessage]) -> str:
-    return json.dumps(asdict(obj))
+    data = asdict(obj)
+    # Remove None values to avoid sending unnecessary fields
+    data = remove_none_values(data)
+    return json.dumps(data)

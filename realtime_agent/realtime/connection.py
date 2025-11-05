@@ -13,7 +13,7 @@ from ..logger import setup_logger
 logger = setup_logger(name=__name__, log_level=logging.INFO)
 
 
-DEFAULT_VIRTUAL_MODEL = "gpt-4o-realtime-preview"
+DEFAULT_VIRTUAL_MODEL = "gpt-realtime-mini"
 
 def smart_str(s: str, max_field_len: int = 128) -> str:
     """parse string as json, truncate data field to 128 characters, reserialize"""
@@ -47,10 +47,10 @@ class RealtimeApiConnection:
     ):
         self.is_azure = is_azure
         if is_azure:
-            path = "/openai/realtime"
+            # 设置azure参数 GA版本的变化 url变成了v1 改成model参数
+            path = "/openai/v1/realtime"
             self.url = f"{base_uri}{path}"
-            # 设置azure参数
-            self.url += f"?api-version={api_verison}&deployment={deployment}"
+            self.url += f"?model={deployment}"
             self.api_key = api_key or os.environ.get("AZURE_API_KEY")
         else:
             self.url = f"{base_uri}{path}"
@@ -73,7 +73,7 @@ class RealtimeApiConnection:
     async def connect(self):
         auth = aiohttp.BasicAuth("", self.api_key) if self.api_key else None
 
-        headers = {"OpenAI-Beta": "realtime=v1"}
+        headers = {}
         if self.is_azure:
             headers = {"api-key": self.api_key}
 

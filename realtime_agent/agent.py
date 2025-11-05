@@ -15,12 +15,13 @@ from agora_realtime_ai_api.rtc import Channel, ChatMessage, RtcEngine, RtcOption
 from .logger import setup_logger
 from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAudioBufferCommitted, \
     InputAudioBufferSpeechStarted, InputAudioBufferSpeechStopped, InputAudioTranscription, ItemCreate, ItemCreated, \
-    ItemInputAudioTranscriptionCompleted, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, \
+    ItemAdded, ItemDone, ItemInputAudioTranscriptionCompleted, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, \
     ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, \
     ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, \
-    ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, ServerVADUpdateParams, \
+    ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, SemanticVADUpdateParams, ServerVADUpdateParams, \
     SessionUpdate, SessionUpdateParams, SessionUpdated, SystemMessageItemParam, Voices, to_json, Usage, InputTokenDetails, OutputTokenDetails, \
-    UserMessageItemParam
+    CachedTokensDetails, UserMessageItemParam, ResponseOutputAudioDelta, ResponseOutputAudioTranscriptDelta, ResponseOutputAudioTranscriptDone, \
+    ResponseOutputAudioDone, AudioConfig, InputAudioConfig, OutputAudioConfig, PCMAudioFormat
 from .realtime.connection import RealtimeApiConnection
 from .tools import ClientToolCallResponse, ToolContext
 from .utils import PCMWriter
@@ -67,7 +68,7 @@ def get_callback_base_url(channel_name: str) -> str:
 @dataclass(frozen=True, kw_only=True)
 class InferenceConfig:
     system_message: str | None = None
-    turn_detection: ServerVADUpdateParams | None = None  # MARK: CHECK!
+    turn_detection: ServerVADUpdateParams | SemanticVADUpdateParams | None = None  # MARK: CHECK!
     voice: Voices | None = None
     azure_base_url: str
     azure_api_key: str
@@ -119,19 +120,26 @@ class RealtimeKitAgent:
                 await connection.send_request(
                     SessionUpdate(
                         session=SessionUpdateParams(
-                            # MARK: check this
-                            turn_detection=inference_config.turn_detection,
+                            type="realtime",  # GA API: specify session type for speech-to-speech
                             tools=tools.model_description() if tools else [],
                             tool_choice="auto",
-                            input_audio_format="pcm16",
-                            output_audio_format="pcm16",
+                            # GA API: audio configuration moved to audio object
+                            audio=AudioConfig(
+                                input=InputAudioConfig(
+                                    format=PCMAudioFormat(),
+                                    turn_detection=inference_config.turn_detection,
+                                    transcription=InputAudioTranscription(model="whisper-1", language="en"),
+                                    # todo noise_reduction 需要前端传递用户使用的是耳机还是设备麦克风来判断降噪类型
+                                ),
+                                output=OutputAudioConfig(
+                                    format=PCMAudioFormat(),
+                                    voice=inference_config.voice if inference_config.voice else "alloy"
+                                )
+                            ),
                             instructions=inference_config.system_message,
-                            voice=inference_config.voice,
-                            model=os.environ.get("OPENAI_MODEL", "gpt-4o-realtime-preview"),
-                            modalities=["text", "audio"],
-                            temperature=0.8,
-                            max_response_output_tokens="inf",
-                            input_audio_transcription=InputAudioTranscription(model="whisper-1")
+                            model=os.environ.get("OPENAI_MODEL", "gpt-realtime-mini"),
+                            output_modalities=["audio"],
+                            max_output_tokens="inf"
                         )
                     )
                 )
@@ -296,12 +304,17 @@ class RealtimeKitAgent:
             ResponseCreate()
         )
 
-    def accumulate_token(self, usage: dict):
+    def accumulate_token(self, usage: Usage):
         if self.token_usage is None:
+            cached_tokens_details = CachedTokensDetails(
+                text_tokens=0,
+                audio_tokens=0
+            )
             input_details = InputTokenDetails(
                 cached_tokens=0,
                 text_tokens=0,
-                audio_tokens=0
+                audio_tokens=0,
+                cached_tokens_details=cached_tokens_details
             )
             output_details = OutputTokenDetails(
                 text_tokens=0,
@@ -314,38 +327,63 @@ class RealtimeKitAgent:
                 input_token_details=input_details,
                 output_token_details=output_details
             )
-        self.token_usage.total_tokens += usage['total_tokens']
-        self.token_usage.input_tokens += usage['input_tokens']
-        self.token_usage.output_tokens += usage['output_tokens']
-        self.token_usage.input_token_details.cached_tokens += usage['input_token_details']['cached_tokens']
-        self.token_usage.input_token_details.text_tokens += usage['input_token_details']['text_tokens']
-        self.token_usage.input_token_details.audio_tokens += usage['input_token_details']['audio_tokens']
-        self.token_usage.output_token_details.text_tokens += usage['output_token_details']['text_tokens']
-        self.token_usage.output_token_details.audio_tokens += usage['output_token_details']['audio_tokens']
+        self.token_usage.total_tokens += usage.total_tokens
+        self.token_usage.input_tokens += usage.input_tokens
+        self.token_usage.output_tokens += usage.output_tokens
+        self.token_usage.input_token_details.cached_tokens += usage.input_token_details.cached_tokens
+        self.token_usage.input_token_details.text_tokens += usage.input_token_details.text_tokens
+        self.token_usage.input_token_details.audio_tokens += usage.input_token_details.audio_tokens
+        self.token_usage.input_token_details.cached_tokens_details.text_tokens += usage.input_token_details.cached_tokens_details.text_tokens
+        self.token_usage.input_token_details.cached_tokens_details.audio_tokens += usage.input_token_details.cached_tokens_details.audio_tokens
+        self.token_usage.output_token_details.text_tokens += usage.output_token_details.text_tokens
+        self.token_usage.output_token_details.audio_tokens += usage.output_token_details.audio_tokens
 
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
             # logger.info(f"Received message {message=}")
             match message:
-                case ResponseAudioDelta():
+                # GA API events (new event names)
+                case ResponseOutputAudioDelta():
                     # logger.info("Received audio message")
                     self.audio_queue.put_nowait(base64.b64decode(message.delta))
-                    # loop.call_soon_threadsafe(self.audio_queue.put_nowait, base64.b64decode(message.delta))
-                    logger.debug(f"TMS:ResponseAudioDelta: response_id:{message.response_id},item_id: {message.item_id}")
-                case ResponseAudioTranscriptDelta():
+                    logger.debug(f"TMS:ResponseOutputAudioDelta: response_id:{message.response_id},item_id: {message.item_id}")
+                case ResponseOutputAudioTranscriptDelta():
                     # logger.info(f"Received text message {message=}")
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
                             message=to_json(message), msg_id=message.item_id
                         )
                     ))
-                case ResponseAudioTranscriptDone():
+                case ResponseOutputAudioTranscriptDone():
                     logger.info(f"Text message done: {message=}", extra={'channelName': self.channel.channelId})
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
                             message=to_json(message), msg_id=message.item_id
                         )
                     ))
+                case ResponseOutputAudioDone():
+                    logger.info(f"ResponseOutputAudioDone: response_id:{message.response_id}, item_id:{message.item_id}", extra={'channelName': self.channel.channelId})
+                    pass
+                # Beta API events
+                # case ResponseAudioDelta():
+                #     # logger.info("Received audio message")
+                #     self.audio_queue.put_nowait(base64.b64decode(message.delta))
+                #     # loop.call_soon_threadsafe(self.audio_queue.put_nowait, base64.b64decode(message.delta))
+                #     logger.debug(f"TMS:ResponseAudioDelta: response_id:{message.response_id},item_id: {message.item_id}")
+                # case ResponseAudioTranscriptDelta():
+                #     # logger.info(f"Received text message {message=}")
+                #     asyncio.create_task(self.channel.chat.send_message(
+                #         ChatMessage(
+                #             message=to_json(message), msg_id=message.item_id
+                #         )
+                #     ))
+                # case ResponseAudioTranscriptDone():
+                #     logger.info(f"Text message done: {message=}", extra={'channelName': self.channel.channelId})
+                #     asyncio.create_task(self.channel.chat.send_message(
+                #         ChatMessage(
+                #             message=to_json(message), msg_id=message.item_id
+                #         )
+                #     ))
                 case InputAudioBufferSpeechStarted():
                     await self.channel.clear_sender_audio_buffer()
                     # clear the audio queue so audio stops playing
@@ -366,14 +404,26 @@ class RealtimeKitAgent:
                 case InputAudioBufferCommitted():
                     logger.info(f"InputAudioBufferCommitted: {message=}", extra={'channelName': self.channel.channelId})
                     pass
-                case ItemCreated():
-                    logger.info(f"ItemCreated: {message=}", extra={'channelName': self.channel.channelId})
+                # Beta API events
+                # case ItemCreated():
+                #     logger.info(f"ItemCreated: {message=}", extra={'channelName': self.channel.channelId})
+                #     # The purpose of sending conversation level items is to identify the order of transcription in the front
+                #     asyncio.create_task(self.channel.chat.send_message(
+                #         ChatMessage(
+                #             message=to_json(message), msg_id=message.item.id
+                #         )
+                #     ))
+                # GA API: new conversation item events
+                case ItemAdded():
+                    logger.info(f"ItemAdded: {message=}", extra={'channelName': self.channel.channelId})
                     # The purpose of sending conversation level items is to identify the order of transcription in the front
                     asyncio.create_task(self.channel.chat.send_message(
                         ChatMessage(
-                            message=to_json(message), msg_id=message.item.get('id')
+                            message=to_json(message), msg_id=message.item.id
                         )
                     ))
+                case ItemDone():
+                    logger.info(f"ItemDone: {message=}", extra={'channelName': self.channel.channelId})
                 # ResponseCreated
                 case ResponseCreated():
                     logger.info(f"ResponseCreated: {message=}", extra={'channelName': self.channel.channelId})

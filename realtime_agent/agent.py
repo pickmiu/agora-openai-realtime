@@ -139,7 +139,8 @@ class RealtimeKitAgent:
                             instructions=inference_config.system_message,
                             model=os.environ.get("OPENAI_MODEL", "gpt-realtime-mini"),
                             output_modalities=["audio"],
-                            max_output_tokens="inf"
+                            max_output_tokens="inf",
+                            truncation="disabled"
                         )
                     )
                 )

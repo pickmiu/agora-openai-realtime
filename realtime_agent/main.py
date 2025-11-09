@@ -42,6 +42,7 @@ class StartAgentRequestBody(BaseModel):
     azure_api_key: str = Field(..., description="The Azure API Key of the agent")
     azure_deployment: str = Field(..., description="The Azure Deployment of the agent")
     azure_api_version: str = Field(..., description="The Azure API Version of the agent")
+    noise_reduction: str | None = Field(None, description="The Noise Reduction of the agent (near_field or far_field)")
 
 
 class StopAgentRequestBody(BaseModel):
@@ -124,6 +125,7 @@ async def start_agent(request):
         azure_api_key = validated_data.azure_api_key
         azure_deployment = validated_data.azure_deployment
         azure_api_version = validated_data.azure_api_version
+        noise_reduction = validated_data.noise_reduction
 
         # Check machine load
         cpu_usage = psutil.cpu_percent(interval=1)
@@ -175,6 +177,7 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
             # turn_detection=ServerVADUpdateParams(
             #     type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500
             # ),
+            noise_reduction=noise_reduction,
             turn_detection=SemanticVADUpdateParams(
                 type="semantic_vad", eagerness="medium", create_response=True, interrupt_response=True
             ),

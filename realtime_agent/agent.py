@@ -15,7 +15,7 @@ from agora_realtime_ai_api.rtc import Channel, ChatMessage, RtcEngine, RtcOption
 from .logger import setup_logger
 from .realtime.struct import ErrorMessage, FunctionCallOutputItemParam, InputAudioBufferCommitted, \
     InputAudioBufferSpeechStarted, InputAudioBufferSpeechStopped, InputAudioTranscription, ItemCreate, ItemCreated, \
-    ItemAdded, ItemDone, ItemInputAudioTranscriptionCompleted, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, \
+    ItemAdded, ItemDone, ItemInputAudioTranscriptionCompleted, NoiseReduction, RateLimitsUpdated, ResponseAudioDelta, ResponseAudioDone, \
     ResponseAudioTranscriptDelta, ResponseAudioTranscriptDone, ResponseContentPartAdded, ResponseContentPartDone, \
     ResponseCreate, ResponseCreated, ResponseDone, ResponseFunctionCallArgumentsDelta, \
     ResponseFunctionCallArgumentsDone, ResponseOutputItemAdded, ResponseOutputItemDone, SemanticVADUpdateParams, ServerVADUpdateParams, \
@@ -74,6 +74,7 @@ class InferenceConfig:
     azure_api_key: str
     azure_deployment: str
     azure_api_version: str
+    noise_reduction: str | None = None
 
 
 class RealtimeKitAgent:
@@ -129,7 +130,7 @@ class RealtimeKitAgent:
                                     format=PCMAudioFormat(),
                                     turn_detection=inference_config.turn_detection,
                                     transcription=InputAudioTranscription(model="whisper-1", language="en"),
-                                    # todo noise_reduction 需要前端传递用户使用的是耳机还是设备麦克风来判断降噪类型
+                                    noise_reduction=NoiseReduction(type=inference_config.noise_reduction) if inference_config.noise_reduction else None,
                                 ),
                                 output=OutputAudioConfig(
                                     format=PCMAudioFormat(),

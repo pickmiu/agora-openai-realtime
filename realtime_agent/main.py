@@ -179,7 +179,7 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
             # ),
             noise_reduction=noise_reduction,
             turn_detection=SemanticVADUpdateParams(
-                type="semantic_vad", eagerness="medium", create_response=True, interrupt_response=True
+                type="semantic_vad", eagerness="low", create_response=True, interrupt_response=True
             ),
             azure_base_url=azure_base_url,
             azure_api_key=azure_api_key,

@@ -344,7 +344,7 @@ class RealtimeKitAgent:
 
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
-            # logger.info(f"Received message {message=}")
+            logger.info(f"Received message {message=}")
             match message:
                 # GA API events (new event names)
                 case ResponseOutputAudioDelta():

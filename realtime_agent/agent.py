@@ -344,7 +344,7 @@ class RealtimeKitAgent:
 
     async def _process_model_messages(self) -> None:
         async for message in self.connection.listen():
-            logger.info(f"Received message {message=}")
+            #logger.info(f"Received message {message=}")
             match message:
                 # GA API events (new event names)
                 case ResponseOutputAudioDelta():
@@ -463,6 +463,18 @@ class RealtimeKitAgent:
                     pass
                 case SessionUpdated():
                     logger.info(f"SessionUpdated: {message=}", extra={'channelName': self.channel.channelId})
+                    session = message.session
+                    audio_cfg = getattr(session, "audio", None) if session else None
+                    input_cfg = getattr(audio_cfg, "input", None) if audio_cfg else None
+                    turn_detection = getattr(input_cfg, "turn_detection", None) if input_cfg else None
+                    logger.info(
+                        "SessionUpdated: session_id=%s model=%s turn_detection=%s turn_detection_type=%s",
+                        session.id if session else None,
+                        session.model if session else None,
+                        turn_detection,
+                        getattr(turn_detection, "type", None),
+                        extra={'channelName': self.channel.channelId},
+                    )
                     pass
                 case RateLimitsUpdated():
                     logger.info(f"RateLimitsUpdated: {message=}", extra={'channelName': self.channel.channelId})

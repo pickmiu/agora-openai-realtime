@@ -127,6 +127,8 @@ async def start_agent(request):
         azure_api_version = validated_data.azure_api_version
         noise_reduction = validated_data.noise_reduction
 
+        logger.info(f"noise_reduction: {noise_reduction}")
+
         # Check machine load
         cpu_usage = psutil.cpu_percent(interval=1)
         ram_usage = psutil.virtual_memory()
@@ -174,13 +176,7 @@ Your knowledge cutoff is 2023-10. You are a helpful, witty, and friendly AI. Act
         inference_config = InferenceConfig(
             system_message=system_message,
             voice=voice,
-            # turn_detection=ServerVADUpdateParams(
-            #     type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500
-            # ),
             noise_reduction=noise_reduction,
-            turn_detection=SemanticVADUpdateParams(
-                type="semantic_vad", eagerness="low", create_response=True, interrupt_response=True
-            ),
             azure_base_url=azure_base_url,
             azure_api_key=azure_api_key,
             azure_deployment=azure_deployment,

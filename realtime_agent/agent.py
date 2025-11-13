@@ -68,7 +68,6 @@ def get_callback_base_url(channel_name: str) -> str:
 @dataclass(frozen=True, kw_only=True)
 class InferenceConfig:
     system_message: str | None = None
-    turn_detection: ServerVADUpdateParams | SemanticVADUpdateParams | None = None  # MARK: CHECK!
     voice: Voices | None = None
     azure_base_url: str
     azure_api_key: str
@@ -128,7 +127,10 @@ class RealtimeKitAgent:
                             audio=AudioConfig(
                                 input=InputAudioConfig(
                                     format=PCMAudioFormat(),
-                                    turn_detection=inference_config.turn_detection,
+                                    # turn_detection=ServerVADUpdateParams(
+                                    #     type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500
+                                    # ),
+                                    turn_detection=SemanticVADUpdateParams(type="semantic_vad", eagerness="low", create_response=True, interrupt_response=True),
                                     transcription=InputAudioTranscription(model="whisper-1"),
                                     noise_reduction=NoiseReduction(type=inference_config.noise_reduction) if inference_config.noise_reduction else None,
                                 ),

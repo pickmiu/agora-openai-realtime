@@ -129,7 +129,7 @@ class RealtimeKitAgent:
                                 input=InputAudioConfig(
                                     format=PCMAudioFormat(),
                                     turn_detection=inference_config.turn_detection,
-                                    transcription=InputAudioTranscription(model="gpt-4o-mini-transcribe", prompt="Split long text using Markdown"),
+                                    transcription=InputAudioTranscription(model="whisper-1"),
                                     noise_reduction=NoiseReduction(type=inference_config.noise_reduction) if inference_config.noise_reduction else None,
                                 ),
                                 output=OutputAudioConfig(

@@ -1,6 +1,6 @@
 import json
 
-from dataclasses import dataclass, asdict, field, is_dataclass
+from dataclasses import dataclass, asdict, field, is_dataclass, MISSING
 from typing import Any, Dict, Literal, Optional, List, Set, Union, get_origin, get_args
 from enum import Enum
 import uuid
@@ -917,6 +917,27 @@ def from_dict(data_class, data):
             non_none_types = [arg for arg in args if arg is not type(None)]
             if len(non_none_types) == 1:
                 return from_dict(non_none_types[0], data)
+        
+        # For Union types with dataclass members that have a 'type' field,
+        # try to match by the 'type' field first (e.g., ServerVADUpdateParams vs SemanticVADUpdateParams)
+        if isinstance(data, dict) and "type" in data:
+            type_value = data["type"]
+            for arg in args:
+                if arg is not type(None) and is_dataclass(arg):
+                    # Check if this dataclass has a 'type' field with a default value
+                    if "type" in arg.__dataclass_fields__:
+                        type_field = arg.__dataclass_fields__["type"]
+                        # Get the default value (could be from default or default_factory)
+                        field_default = type_field.default if type_field.default is not MISSING else (
+                            type_field.default_factory() if type_field.default_factory is not MISSING else None
+                        )
+                        # If the type field matches, use this type
+                        if field_default == type_value:
+                            try:
+                                return from_dict(arg, data)
+                            except:
+                                continue
+        
         # For other Union types, try each type
         for arg in args:
             if arg is not type(None):

@@ -129,7 +129,7 @@ class RealtimeKitAgent:
                                     format=PCMAudioFormat(),
                                     # turn_detection=ServerVADUpdateParams(
                                     #     type="server_vad", threshold=0.5, prefix_padding_ms=300, silence_duration_ms=500
-                                    # ),
+                                    #  ),
                                     turn_detection=SemanticVADUpdateParams(type="semantic_vad", eagerness="low", create_response=True, interrupt_response=True),
                                     transcription=InputAudioTranscription(model="whisper-1"),
                                     noise_reduction=NoiseReduction(type=inference_config.noise_reduction) if inference_config.noise_reduction else None,
